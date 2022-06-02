@@ -2,24 +2,36 @@ import { NavigationContainer, useTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { Icon, Text } from "native-base";
+import { Icon, StatusBar, Text, useColorMode } from "native-base";
 
+import { lightTheme, darkTheme } from "../theme";
+// Screens
 import HomeScreen from "../screens/HomeScreen";
+import SettingsScreen from "../screens/SettingsScreen";
+import DisplaySettingScreen from "../screens/DisplaySettingScreen";
+import SearchBarHeader from "../components/SearchBarHeader";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-export default Navigation = () => {
+const Navigation = () => {
+  const { colorMode } = useColorMode();
+  const MyTheme = colorMode == "light" ? lightTheme : darkTheme;
+  const colors = MyTheme.colors;
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={MyTheme}>
+      <StatusBar
+        barStyle={colorMode == "light" ? "dark-content" : "light-content"}
+        backgroundColor={colors.Primary100}
+      />
       <MyTab />
     </NavigationContainer>
   );
 };
 
 const MyTab = () => {
+  const { colors } = useTheme();
   return (
-    // <Text>123</Text>
     <Tab.Navigator
       initialRouteName="HomeTabs"
       screenOptions={{
@@ -28,13 +40,14 @@ const MyTab = () => {
         headerStyle: {
           backgroundColor: "lightyellow",
         },
-        tabBarActiveTintColor: "#024D60",
-        tabBarInactiveTintColor: "#888888",
+        tabBarActiveTintColor: colors.Primary900,
+        tabBarInactiveTintColor: colors.Grey,
         tabBarStyle: {
           height: 56,
+          backgroundColor: colors.Primary100,
+        },
+        tabBarItemStyle: {
           padding: 8,
-          paddingBottom: 8,
-          backgroundColor: "#DEEAEA",
         },
         tabBarIconStyle: {
           width: 24,
@@ -49,14 +62,20 @@ const MyTab = () => {
         name="HomeTabs"
         component={HomStack}
         options={{
+          headerShown: true,
+          header: (props) => <SearchBarHeader />,
           title: "清單",
           tabBarLabel: "清單",
           tabBarIcon: ({ focused }) => (
             <>
               {focused ? (
-                <MaterialIcons name="note-add" size={24} color={"#024D60"} />
+                <MaterialIcons
+                  name="note-add"
+                  size={24}
+                  color={colors.Primary900}
+                />
               ) : (
-                <MaterialIcons name="note-add" size={24} color={"#888888"} />
+                <MaterialIcons name="note-add" size={24} color={colors.Grey} />
               )}
             </>
           ),
@@ -74,13 +93,13 @@ const MyTab = () => {
                 <MaterialIcons
                   name="calendar-today"
                   size={24}
-                  color={"#024D60"}
+                  color={colors.Primary900}
                 />
               ) : (
                 <MaterialIcons
                   name="calendar-today"
                   size={24}
-                  color={"#888888"}
+                  color={colors.Grey}
                 />
               )}
             </>
@@ -89,16 +108,20 @@ const MyTab = () => {
       />
       <Tab.Screen
         name="SettingsStack"
-        component={HomStack}
+        component={SettingsStack}
         options={{
           title: "設定",
           tabBarLabel: "設定",
           tabBarIcon: ({ focused }) => (
             <>
               {focused ? (
-                <MaterialIcons name="settings" size={24} color={"#024D60"} />
+                <MaterialIcons
+                  name="settings"
+                  size={24}
+                  color={colors.Primary900}
+                />
               ) : (
-                <MaterialIcons name="settings" size={24} color={"#888888"} />
+                <MaterialIcons name="settings" size={24} color={colors.Grey} />
               )}
             </>
           ),
@@ -113,13 +136,40 @@ const HomStack = ({ navigation }) => {
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
-        // title: null,
-        headerStyle: {
-          backgroundColor: "lightblue",
-        },
       }}
     >
       <Stack.Screen name="Home" component={HomeScreen} options={{}} />
     </Stack.Navigator>
   );
 };
+
+const SettingsStack = ({ navigation }) => {
+  const { colors } = useTheme();
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        title: null,
+        headerTitleAlign: "center",
+        headerTitleStyle: {
+          fontSize: 20,
+        },
+        headerStyle: {
+          backgroundColor: colors.Primary100,
+        },
+      }}
+    >
+      <Stack.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{ title: "設定" }}
+      />
+      <Stack.Screen
+        name="DisplaySetting"
+        component={DisplaySettingScreen}
+        options={{ title: "主題設定" }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+export default Navigation;
