@@ -7,15 +7,18 @@ import DisplaySettingScreen from "../screens/DisplaySettingScreen";
 
 const Stack = createNativeStackNavigator();
 
-// Home Stack ( Home )
-const HomeStack = ({ navigation }) => {
+// Home Stack ( Home + ? )
+const HomeStack = ({ navigation }, parentProps) => {
   return (
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
       }}
     >
-      <Stack.Screen name="Home" component={HomeScreen} options={{}} />
+      <Stack.Screen
+        name="Home"
+        children={(props) => <HomeScreen {...parentProps} />}
+      />
     </Stack.Navigator>
   );
 };

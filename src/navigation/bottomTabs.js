@@ -1,6 +1,8 @@
 import { useTheme } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+// Top Tabs
+import HomeTopTabs from "./topTabs";
 // Stacks
 import { HomeStack, SettingsStack } from "./stacks";
 // Custom Header
@@ -13,7 +15,7 @@ const BottomTabs = () => {
   const { colors } = useTheme();
   return (
     <Tab.Navigator
-      initialRouteName="HomeTabs"
+      initialRouteName="HomeTobTabs"
       screenOptions={{
         headerShown: false,
         headerStatusBarHeight: 32,
@@ -36,8 +38,8 @@ const BottomTabs = () => {
       }}
     >
       <Tab.Screen
-        name="HomeTabs"
-        component={HomeStack}
+        name="HomeTobTabs"
+        component={HomeTopTabs}
         options={{
           headerShown: true,
           header: (props) => <SearchBarHeader />,
