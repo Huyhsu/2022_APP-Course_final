@@ -54,107 +54,72 @@ const TodoItem = () => {
   return (
     <Box
       h={88}
-      pt={6}
-      pl={6}
-      pr={4}
       mt={2}
       bgColor={colors.White}
-      borderRadius={5}
+      borderRadius={4}
+      justifyContent={"center"}
     >
-      <Center w={"100%"}>
-        <HStack
-          w={"100%"}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <Pressable
-            onPress={() => {
-              // dispatch(setEditItem(item));
-              // navigation.navigate("EditStack", {
-              //   screen: "Edit",
-              //   params: item,
-              // });
-            }}
-            onLongPress={() => console.log("TAKOLONG")}
-          >
-            <HStack alignItems={"center"}>
-              <MaterialIcons
-                name="circle"
-                size={24}
-                color={
-                  // divide == "high"
-                  //   ? colors.high700
-                  //   : divide == "medium"
-                  //   ? colors.medium700
-                  //   : colors.low700
-                  colors.Low
-                }
-              />
-              <VStack ml={6}>
-                <Text color={colors.Primary900} fontSize={"lg"}>
-                  {/* {tempTitle.length > 10
+      <Pressable
+        pl={6}
+        pr={4}
+        h={"100%"}
+        w={"100%"}
+        onPress={() => {
+          // dispatch(setEditItem(item));
+          // navigation.navigate("EditStack", {
+          //   screen: "Edit",
+          //   params: item,
+          // });
+          console.log("takoshort");
+        }}
+        onLongPress={() => console.log("TAKOLONG")}
+        flexDir={"row"}
+        justifyContent={"space-between"}
+        alignItems={"center"}
+      >
+        <HStack alignItems={"center"} maxW={"80%"}>
+          <MaterialIcons
+            name="circle"
+            size={24}
+            color={
+              // divide == "high"
+              //   ? colors.high700
+              //   : divide == "medium"
+              //   ? colors.medium700
+              //   : colors.low700
+              colors.High
+            }
+          />
+          <VStack ml={6} pt={1}>
+            <Text color={colors.Primary900} fontSize={"lg"}>
+              {/* {tempTitle.length > 10
                     ? tempTitle.substring(0, 10) + "..."
                     : tempTitle} */}
-                  行動程式設計期末作業
-                </Text>
-                <Text color={colors.Grey} fontSize={"sm"}>
-                  {/* {tempTime} */}
-                  2022 06/09 (四) 12:30
-                </Text>
-              </VStack>
-            </HStack>
-          </Pressable>
-
-          <Pressable
-            w={12}
-            h={12}
-            justifyContent={"center"}
-            alignItems={"center"}
-            // bgColor={"red.100"}
-            onPress={() => {
-              handleClick();
-            }}
-          >
-            <MaterialIcons
-              name="check-box-outline-blank"
-              size={24}
-              color={colors.Primary900}
-            />
-
-            {/* {done ? (
-              colorMode == "light" ? (
-                <Box>
-                  <Image
-                    source={require("../icon/icon_checkbox.png")}
-                    alt={"checked_checkbox"}
-                  />
-                </Box>
-              ) : (
-                <>
-                  <Image
-                    source={require("../icon/icon_dark_checkbox.png")}
-                    alt={"checked_checkbox"}
-                  />
-                </>
-              )
-            ) : colorMode == "light" ? (
-              <>
-                <Image
-                  source={require("../icon/icon_checkbox_blank.png")}
-                  alt={"blank_checkbox"}
-                />
-              </>
-            ) : (
-              <Box>
-                <Image
-                  source={require("../icon/icon_dark_checkbox_blank.png")}
-                  alt={"blank_checkbox"}
-                />
-              </Box>
-            )} */}
-          </Pressable>
+              行動程式設計期末作業123
+            </Text>
+            <Text color={colors.Grey} fontSize={"sm"}>
+              {/* {tempTime} */}
+              2022 06/09 (四) 12:30
+            </Text>
+          </VStack>
         </HStack>
-      </Center>
+        <Pressable
+          w={12}
+          h={12}
+          justifyContent={"center"}
+          alignItems={"center"}
+          onPress={() => {
+            handleClick();
+            console.log("Check !");
+          }}
+        >
+          <MaterialIcons
+            name="check-box-outline-blank"
+            size={24}
+            color={colors.Primary900}
+          />
+        </Pressable>
+      </Pressable>
     </Box>
   );
 };

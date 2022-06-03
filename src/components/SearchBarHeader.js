@@ -27,7 +27,11 @@ const SearchBarHeader = (props) => {
               />
             }
           />
-          <Pressable position={"absolute"} right={2}>
+          <Pressable
+            position={"absolute"}
+            right={2}
+            onPress={() => console.log("more")}
+          >
             <MaterialIcons
               name="more-vert"
               size={24}
