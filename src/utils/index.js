@@ -18,6 +18,7 @@ import {
   Modal,
   useColorMode,
   Divider,
+  HStack,
 } from "native-base";
 import { useTheme } from "@react-navigation/native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -254,29 +255,68 @@ export const InputOptionWithCategory = (props) => {
             />
           )}
         </Pressable>
-        <Modal
-          isOpen={modalVisible}
-          onClose={() => setModalVisible(false)}
-          avoidKeyboard
-          bottom="4"
-          size="lg"
-          // borderRadius={0}
-        >
-          <Modal.Content bgColor={colors.light100} borderRadius={4}>
-            <Modal.Header _text={{ fontSize: "md", color: colors.dark700 }}>
-              選擇類別
-            </Modal.Header>
-            <ScrollView>
-              <Modal.Body>
-                <FormControl mt={4} isRequired>
-                  <Radio.Group
-                    name="selecCategory"
-                    value={category}
-                    onChange={(nextValue) => {
-                      setCategory(nextValue);
-                    }}
-                  >
-                    {/* {categoryList.categorys.length == 0 ? (
+
+        <ModalWithCategory
+          category={category}
+          setCategory={setCategory}
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          nextModalVisible={secondModalVisible}
+          setNextModalVisible={setSecondModalVisible}
+        />
+
+        <ModalWithNewCategory
+          modalVisible={secondModalVisible}
+          setModalVisible={setSecondModalVisible}
+        />
+
+        <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+          請選擇一項類別!
+        </FormControl.ErrorMessage>
+      </FormControl>
+    </Box>
+  );
+};
+// 選擇類別 Modal ------------------------------------------------------------------------
+const ModalWithCategory = (props) => {
+  const {
+    category,
+    setCategory,
+    modalVisible,
+    setModalVisible,
+    nextModalVisible,
+    setNextModalVisible,
+  } = props;
+  const { colors } = useTheme();
+  return (
+    <Box>
+      <Modal
+        isOpen={modalVisible}
+        onClose={() => setModalVisible(false)}
+        avoidKeyboard
+        size="lg"
+      >
+        <Modal.Content bgColor={colors.White} borderRadius={4}>
+          <Modal.Header
+            _text={{
+              fontSize: "md",
+              color: colors.Black,
+              fontWeight: "normal",
+            }}
+          >
+            選擇類別
+          </Modal.Header>
+          <ScrollView>
+            <Modal.Body>
+              <FormControl mt={4} isRequired>
+                <Radio.Group
+                  name="selecCategory"
+                  value={category}
+                  onChange={(nextValue) => {
+                    setCategory(nextValue);
+                  }}
+                >
+                  {/* {categoryList.categorys.length == 0 ? (
                       <Text fontSize={"md"} color={colors.dark700}>
                         請先建立一個類別
                       </Text>
@@ -294,138 +334,183 @@ export const InputOptionWithCategory = (props) => {
                         </Radio>
                       ))
                     )} */}
-                    <Text fontSize={"md"} color={colors.dark700}>
-                      請先建立一個類別
-                    </Text>
-                  </Radio.Group>
-                </FormControl>
-                <Pressable
-                  onPress={() => {
-                    setModalVisible(false);
-                    setSecondModalVisible(!secondModalVisible);
-                  }}
-                >
-                  {({ isHovered, isFocused, isPressed }) => (
-                    <Box
-                      color={colors.dark700}
-                      bgColor={
-                        isPressed
-                          ? colors.light400
-                          : isHovered
-                          ? colors.light400
-                          : colors.light100
-                      }
-                      borderRadius={5}
-                      px={2}
-                      py={1}
-                      mt={4}
-                    >
-                      <Text
-                        color={colors.primary700}
-                        fontSize={"md"}
-                        fontWeight={"medium"}
-                      >
-                        + 建立新類別
-                      </Text>
-                    </Box>
-                  )}
-                </Pressable>
-              </Modal.Body>
-            </ScrollView>
-
-            <Modal.Footer bgColor={colors.light100}>
-              {/* <Divider /> */}
-              <Button.Group space={2}>
-                <Button
-                  variant="ghost"
-                  colorScheme="blueGray"
-                  onPress={() => {
-                    setModalVisible(false);
-                    setCategory("");
-                    // setCategoryIsError(true);
-                  }}
-                >
-                  取消
-                </Button>
-                <Button
-                  _text={{ color: colors.primary700 }}
-                  bgColor={colors.light100}
-                  onPress={() => {
-                    setModalVisible(false);
-                  }}
-                  isDisabled={category.length == 0}
-                >
-                  確定
-                </Button>
-              </Button.Group>
-            </Modal.Footer>
-          </Modal.Content>
-        </Modal>
-
-        {/* <Modal
-          isOpen={secondModalVisible}
-          onClose={() => setSecondModalVisible(false)}
-          avoidKeyboard
-          bottom="4"
-          size="lg"
-        >
-          <Modal.Content bgColor={colors.light100}>
-            <Modal.Body>
-              <FormControl>
-                <FormControl.Label
-                  _text={{
-                    fontSize: "md",
-                    color:
-                      colorMode == "light" ? colors.dark700 : colors.dark700,
-                  }}
-                  mt={4}
-                >
-                  建立新類別
-                </FormControl.Label>
-                <Input
-                  placeholder={"類別名稱"}
-                  fontSize={"md"}
-                  value={newCategory}
-                  onChangeText={(text) => setNewCategory(text)}
-                  color={colors.dark700}
-                />
+                  <Text fontSize={"md"} color={colors.dark700}>
+                    請先建立一個類別
+                  </Text>
+                </Radio.Group>
               </FormControl>
+              <Pressable
+                onPress={() => {
+                  setModalVisible(false);
+                  setNextModalVisible(!nextModalVisible);
+                }}
+              >
+                {({ isHovered, isFocused, isPressed }) => (
+                  <HStack
+                    color={colors.Black}
+                    bgColor={
+                      isPressed
+                        ? colors.Background
+                        : isHovered
+                        ? colors.White
+                        : colors.White
+                    }
+                    borderRadius={5}
+                    px={2}
+                    py={1}
+                    mt={4}
+                    alignItems={"center"}
+                  >
+                    <MaterialIcons name="add" size={16} color={colors.Black} />
+                    <Text color={colors.primary700} fontSize={"md"} ml={5}>
+                      建立新類別
+                    </Text>
+                  </HStack>
+                )}
+              </Pressable>
             </Modal.Body>
-            <Modal.Footer bgColor={colors.light100}>
-              <Divider />
-              <Button.Group space={2}>
-                <Button
-                  variant="ghost"
-                  colorScheme="blueGray"
-                  onPress={() => {
-                    setSecondModalVisible(false);
-                    setNewCategory("");
-                  }}
-                >
-                  取消
-                </Button>
-                <Button
-                  onPress={() => {
-                    setSecondModalVisible(false);
-                    setCategory(newCategory);
-                    setNewCategory("");
-                    dispatch(addCategory(newCategory));
-                  }}
-                  _text={{ color: colors.primary700 }}
-                  bgColor={colors.light100}
-                  isDisabled={newCategory.length == 0 || newCategory[0] == " "}
-                >
-                  確定
-                </Button>
-              </Button.Group>
-            </Modal.Footer>
-          </Modal.Content>
-        </Modal> */}
+          </ScrollView>
 
-        <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-          請選擇一項類別!
-        </FormControl.ErrorMessage>
-      </FormControl>
+          <Modal.Footer bgColor={colors.light100}>
+            {/* <Divider /> */}
+            {/* <Button.Group space={2}>
+              <Button
+                variant="ghost"
+                colorScheme="blueGray"
+                onPress={() => {
+                  setModalVisible(false);
+                  setCategory("");
+                  // setCategoryIsError(true);
+                }}
+              >
+                取消
+              </Button>
+              <Button
+                _text={{ color: colors.primary700 }}
+                bgColor={colors.light100}
+                onPress={() => {
+                  setModalVisible(false);
+                }}
+                isDisabled={category.length == 0}
+              >
+                確定
+              </Button>
+            </Button.Group> */}
+            <HStack>
+              <Pressable
+                mr={5}
+                onPress={() => {
+                  setModalVisible(false);
+                  setCategory("");
+                  // setCategoryIsError(true);
+                }}
+              >
+                <Text fontSize={"md"}>取消</Text>
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  setModalVisible(false);
+                }}
+              >
+                <Text fontSize={"md"}>確認</Text>
+              </Pressable>
+            </HStack>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
+    </Box>
+  );
+};
+// 新增類別 Modal ------------------------------------------------------------------------
+const ModalWithNewCategory = (props) => {
+  // const {modalVisible, setModalVisible, newCategory, setNewCategory} = props;
+  const { modalVisible, setModalVisible } = props;
+  const { colors } = useTheme();
+  const { colorMode } = useColorMode();
+  return (
+    <Box>
+      <Modal
+        isOpen={modalVisible}
+        onClose={() => setModalVisible(false)}
+        avoidKeyboard
+        bottom="4"
+        size="lg"
+        closeOnOverlayClick={false}
+      >
+        <Modal.Content bgColor={colors.light100}>
+          <Modal.Header
+            _text={{
+              fontSize: "md",
+              color: colors.Black,
+              fontWeight: "normal",
+            }}
+          >
+            建立新類別
+          </Modal.Header>
+          <Modal.Body>
+            <FormControl>
+              <Input
+                placeholder={"類別名稱"}
+                fontSize={"md"}
+                // value={newCategory}
+                // onChangeText={(text) => setNewCategory(text)}
+                color={colors.Black}
+                bgColor={colors.White}
+              />
+            </FormControl>
+          </Modal.Body>
+          <Modal.Footer bgColor={colors.light100}>
+            {/* <Divider /> */}
+            {/* <Button.Group space={2}>
+              <Button
+                variant="ghost"
+                colorScheme="blueGray"
+                onPress={() => {
+                  setModalVisible(false);
+                  // setNewCategory("");
+                }}
+              >
+                取消
+              </Button>
+              <Button
+                onPress={() => {
+                  setModalVisible(false);
+                  // setCategory(newCategory);
+                  // setNewCategory("");
+                  // dispatch(addCategory(newCategory));
+                }}
+                _text={{ color: colors.primary700 }}
+                bgColor={colors.light100}
+                // isDisabled={newCategory.length == 0 || newCategory[0] == " "}
+              >
+                確定
+              </Button>
+            </Button.Group> */}
+            <HStack>
+              <Pressable
+                mr={5}
+                onPress={() => {
+                  setModalVisible(false);
+                  // setCategory("");
+                  // setCategoryIsError(true);
+                }}
+              >
+                <Text fontSize={"md"}>取消</Text>
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  setModalVisible(false);
+                  // setCategory(newCategory);
+                  // setNewCategory("");
+                  // dispatch(addCategory(newCategory));
+                }}
+              >
+                <Text fontSize={"md"}>確認</Text>
+              </Pressable>
+            </HStack>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
     </Box>
   );
 };

@@ -23,6 +23,7 @@ const NoteAddScreen = ({ Navigation }) => {
   const [divide, setDivide] = useState("low");
   // color
   const { colors } = useTheme();
+
   return (
     <Box flex={1} bgColor={colors.Background} p={10}>
       <InputWithTitle title={title} setTitle={setTitle} />
