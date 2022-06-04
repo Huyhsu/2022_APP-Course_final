@@ -14,6 +14,7 @@ const Navigation = () => {
       <StatusBar
         barStyle={colorMode == "light" ? "dark-content" : "light-content"}
         backgroundColor={colors.Primary100}
+        // backgroundColor={"lightblue"}
       />
       <BottomTabs />
     </NavigationContainer>

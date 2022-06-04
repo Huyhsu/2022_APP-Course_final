@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "../screens/HomeScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import DisplaySettingScreen from "../screens/DisplaySettingScreen";
+import { Box, Center, Text } from "native-base";
 
 const Stack = createNativeStackNavigator();
 
@@ -37,6 +38,7 @@ const SettingsStack = ({ navigation }) => {
         headerStyle: {
           backgroundColor: colors.Primary100,
         },
+        headerTintColor: colors.Primary900,
       }}
     >
       <Stack.Screen

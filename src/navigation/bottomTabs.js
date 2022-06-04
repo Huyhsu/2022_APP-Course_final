@@ -7,6 +7,7 @@ import HomeTopTabs from "./topTabs";
 import { HomeStack, SettingsStack } from "./stacks";
 // Custom Header
 import SearchBarHeader from "../components/SearchBarHeader";
+import NoteAddScreen from "../screens/NoteAddSceen";
 
 const Tab = createBottomTabNavigator();
 
@@ -62,7 +63,7 @@ const BottomTabs = () => {
       />
       <Tab.Screen
         name="CalendarStack"
-        component={HomeStack}
+        component={NoteAddScreen}
         options={{
           title: "日曆",
           tabBarLabel: "日曆",
