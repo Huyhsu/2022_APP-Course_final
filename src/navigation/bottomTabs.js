@@ -4,10 +4,14 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 // Top Tabs
 import HomeTopTabs from "./topTabs";
 // Stacks
-import { HomeStack, SettingsStack, NoteAddStack } from "./stacks";
+import {
+  CalendarStack,
+  SettingsStack,
+  NoteAddStack,
+  NoteEditStack,
+} from "./stacks";
 // Custom Header
 import SearchBarHeader from "../components/SearchBarHeader";
-import NoteAddScreen from "../screens/NoteAddSceen";
 
 const Tab = createBottomTabNavigator();
 
@@ -63,7 +67,7 @@ const BottomTabs = () => {
       />
       <Tab.Screen
         name="CalendarStack"
-        component={NoteAddScreen}
+        component={CalendarStack}
         options={{
           title: "日曆",
           tabBarLabel: "日曆",
@@ -110,6 +114,18 @@ const BottomTabs = () => {
       <Tab.Screen
         name="NoteAddStack"
         component={NoteAddStack}
+        options={{
+          tabBarButton: () => null,
+          tabBarIcon: () => null,
+          title: "",
+          tabBarStyle: {
+            display: "none",
+          },
+        }}
+      />
+      <Tab.Screen
+        name="NoteEditStack"
+        component={NoteEditStack}
         options={{
           tabBarButton: () => null,
           tabBarIcon: () => null,

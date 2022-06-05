@@ -68,10 +68,10 @@ const TodoItem = ({
         w={"100%"}
         onPress={() => {
           // dispatch(setEditItem(item));
-          // navigation.navigate("EditStack", {
-          //   screen: "Edit",
-          //   params: item,
-          // });
+          navigation.navigate("NoteEditStack", {
+            screen: "NoteEdit",
+            params: todoItem,
+          });
           console.log("takoshort");
         }}
         onLongPress={() => console.log("TAKOLONG")}

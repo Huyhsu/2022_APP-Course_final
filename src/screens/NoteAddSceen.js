@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Box, Text, Pressable, Center } from "native-base";
+import { Box, Text, Pressable, Center, HStack } from "native-base";
 import { useTheme } from "@react-navigation/native";
 
 import {
@@ -9,12 +9,13 @@ import {
   InputOptionWithCategory,
   RadioWithDivide,
   ConfirmButton,
+  CancelButton,
 } from "../utils";
 
 import { useDispatch, useSelector } from "react-redux";
 import { addTodoItem, selectCategorys } from "../redux/todoItemSlice";
 
-const NoteAddScreen = ({ Navigation }) => {
+const NoteAddScreen = ({ navigation }) => {
   // State
   const categorys = useSelector(selectCategorys);
   // Dispatch
@@ -37,6 +38,7 @@ const NoteAddScreen = ({ Navigation }) => {
   // 確認輸入
   const checkInputValues = () => {
     createTodoItem();
+    resetFormInput();
   };
   // 建立 Todo Item
   const createTodoItem = () => {
@@ -51,6 +53,29 @@ const NoteAddScreen = ({ Navigation }) => {
       selectTime: timeText.replace(timePattern, "-").slice(0, 10),
     };
     dispatch(addTodoItem(newItem));
+    navigation.navigate("HomeTopTabs");
+  };
+  // 重設表單輸入
+  const resetFormInput = () => {
+    setTitle("");
+    setNotes("");
+    setTimeText("");
+    setCategory("");
+    setDivide("low");
+    // setIsCheck(false);
+    // setTitleIsError(true);
+    // setTimeIsError(true);
+    // setCategoryIsError(true);
+  };
+
+  // 按下新增
+  const onConfirmPress = () => {
+    checkInputValues();
+  };
+  // 按下取消
+  const onCancelPress = () => {
+    resetFormInput();
+    navigation.navigate("HomeTopTabs");
   };
 
   // color
@@ -68,34 +93,15 @@ const NoteAddScreen = ({ Navigation }) => {
         setNewCategory={setNewCategory}
       />
       <RadioWithDivide divie={divide} setDivide={setDivide} />
-      <ConfirmButton buttonText={"新增"} onConfirmPress={checkInputValues} />
-      {/* <Pressable
-        w={"60%"}
-        onPress={() => {
-          checkInputValues();
-        }}
-      >
-        {({ isHovered, isFocused, isPressed }) => (
-          <Center
-            h={12}
-            mt={8}
-            mb={24}
-            shadow={1}
-            rounded={5}
-            bgColor={
-              isPressed
-                ? colors.Background
-                : isHovered
-                ? colors.White
-                : colors.White
-            }
-          >
-            <Text color={colors.Black} fontSize={"md"}>
-              新增
-            </Text>
-          </Center>
-        )}
-      </Pressable> */}
+
+      <HStack mt={6} justifyContent={"flex-end"}>
+        <Box mr={2}>
+          <ConfirmButton buttonText={"新增"} onConfirmPress={onConfirmPress} />
+        </Box>
+        <Box>
+          <CancelButton buttonText={"取消"} onCancelPress={onCancelPress} />
+        </Box>
+      </HStack>
     </Box>
   );
 };

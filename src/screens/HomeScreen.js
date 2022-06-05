@@ -18,12 +18,7 @@ const HomeScreen = ({ navigation, currentTodoItems }) => {
       // px={10}
     >
       {currentTodoItems.length == 0 ? (
-        <Text
-          _light={{ color: colors.primary700 }}
-          fontSize={"md"}
-          pt={24}
-          alignSelf={"center"}
-        >
+        <Text color={colors.Black} fontSize={"md"} pt={24} alignSelf={"center"}>
           點擊 + 號以新增項目
         </Text>
       ) : (

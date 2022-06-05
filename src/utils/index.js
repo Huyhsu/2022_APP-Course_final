@@ -577,15 +577,59 @@ const ConfirmButton = (props) => {
   return (
     <Pressable
       onPress={() => onConfirmPress()}
-      bgColor={colors.Primary500}
-      px={4}
-      py={3}
+      borderRadius={16}
+      //shadow={3}
     >
-      <Text fontSize={"md"}>{buttonText}</Text>
+      {({ isHovered, isFocused, isPressed }) => (
+        <Center
+          bgColor={
+            isPressed
+              ? colors.Primary100
+              : isHovered
+              ? colors.Primary500
+              : colors.Primary500
+          }
+          borderRadius={16}
+          px={4}
+          py={3}
+        >
+          <Text fontSize={"md"}>{buttonText}</Text>
+        </Center>
+      )}
     </Pressable>
   );
 };
-
+// 取消按鍵 ------------------------------------------------------------------------------
+const CancelButton = (props) => {
+  const { buttonText, onCancelPress } = props;
+  // color
+  const { colors } = useTheme();
+  return (
+    <Pressable
+      onPress={() => onCancelPress()}
+      borderRadius={16}
+      // shadow={3}
+    >
+      {({ isHovered, isFocused, isPressed }) => (
+        <Center
+          bgColor={
+            isPressed
+              ? colors.Primary100
+              : isHovered
+              ? colors.Background
+              : colors.Background
+          }
+          borderRadius={16}
+          px={4}
+          py={3}
+        >
+          <Text fontSize={"md"}>{buttonText}</Text>
+        </Center>
+      )}
+    </Pressable>
+  );
+};
+// ===================================================================================
 // Functions
 export { getCurrentTime };
 // Input Utils
@@ -597,4 +641,4 @@ export {
   RadioWithDivide,
 };
 // Button
-export { ConfirmButton };
+export { ConfirmButton, CancelButton };

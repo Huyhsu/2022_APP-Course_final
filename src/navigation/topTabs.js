@@ -1,7 +1,7 @@
 import { useTheme } from "@react-navigation/native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { Center, Pressable } from "native-base";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { Center, Pressable } from "native-base";
 
 import { useDispatch, useSelector } from "react-redux";
 import { selectCategorys, selectTodoItems } from "../redux/todoItemSlice";
@@ -87,7 +87,7 @@ const HomeTopTabs = ({ navigation }) => {
       </Tab.Navigator>
       <Pressable
         position={"absolute"}
-        rounded={16}
+        borderRadius={16}
         bottom={4}
         right={4}
         shadow={3}
@@ -110,7 +110,7 @@ const HomeTopTabs = ({ navigation }) => {
             }
             w={"100%"}
             h={"100%"}
-            rounded={16}
+            borderRadius={16}
           >
             <MaterialIcons name="add" size={24} color={colors.Primary900} />
           </Center>
