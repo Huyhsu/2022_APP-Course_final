@@ -2,6 +2,10 @@ import { useTheme } from "@react-navigation/native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { Center, Pressable } from "native-base";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+
+import { useDispatch, useSelector } from "react-redux";
+import { selectCategorys, selectTodoItems } from "../redux/todoItemSlice";
+
 // Home Stack
 import { HomeStack } from "./stacks";
 // Week Info Card
@@ -9,19 +13,27 @@ import WeekInfoCard from "../components/WeekInfoCard";
 
 const Tab = createMaterialTopTabNavigator();
 
-// Top Tab - HomeTabs (Many Home Stacks) with FAB
+// Top Tab - HomeTabs (Many HomeStacks) with FAB
 const HomeTopTabs = ({ navigation }) => {
-  // const { itemList, categoryList } = useSelector((state) => state.item);
-  // const dispatch = useDispatch();
+  // States
+  const todoItemsValue = useSelector(selectTodoItems);
+  const categorysValue = useSelector(selectCategorys);
+  // Dispatch
+  const dispatch = useDispatch();
+
   const { colors } = useTheme();
   return (
     <>
-      <WeekInfoCard />
+      <Pressable onPress={() => console.log(categorysValue.length)}>
+        <WeekInfoCard />
+      </Pressable>
       <Tab.Navigator
         screenOptions={{
           tabBarStyle: {
             elevation: 0,
             backgroundColor: colors.Primary100,
+            padding: 0,
+            paddingBottom: 0,
           },
           tabBarScrollEnabled: true,
           tabBarActiveTintColor: colors.Primary900,
@@ -29,8 +41,10 @@ const HomeTopTabs = ({ navigation }) => {
           tabBarContentContainerStyle: {
             height: 56,
           },
+          tabBarAllowFontScaling: false,
           tabBarItemStyle: {
             width: "auto",
+            padding: 0,
             paddingHorizontal: 16,
           },
           tabBarPressColor: colors.Primary100,
@@ -40,37 +54,36 @@ const HomeTopTabs = ({ navigation }) => {
           tabBarLabelStyle: {
             textTransform: "none",
             fontSize: 16,
+            padding: 0,
           },
         }}
       >
         <Tab.Screen
           name="所有"
           children={(props) => (
-            // <HomeStack currentList={itemList.items} {...props} />
-            <HomeStack {...props} />
+            <HomeStack currentTodoItems={todoItemsValue} {...props} />
           )}
         />
-        <Tab.Screen
-          name="作業"
-          children={(props) => (
-            // <HomeStack currentList={itemList.items} {...props} />
-            <HomeStack {...props} />
-          )}
-        />
-        {/* {categoryList.categorys.map((category, index) => {
-          let currentCategoryItemList = [
-            ...itemList.items.filter((item) => item.category == category),
+        {categorysValue.map((category, index) => {
+          let currentCategoryTodoItems = [
+            ...todoItemsValue.filter((item) => item.category == category),
           ];
           return (
-            <TopTab.Screen
+            <Tab.Screen
               key={category + index}
-              name={category}
+              name={category + index}
               children={(props) => (
-                <HomeStack currentList={currentCategoryItemList} {...props} />
+                <HomeStack
+                  currentTodoItems={currentCategoryTodoItems}
+                  {...props}
+                />
               )}
+              options={{
+                title: category,
+              }}
             />
           );
-        })} */}
+        })}
       </Tab.Navigator>
       <Pressable
         position={"absolute"}
@@ -82,10 +95,9 @@ const HomeTopTabs = ({ navigation }) => {
         h={58}
         justifyContent={"center"}
         alignItems={"center"}
-        // bgColor={colors.green700}
-        // onPress={() => {
-        //   navigation.navigate("NoteAddStack");
-        // }}
+        onPress={() => {
+          navigation.navigate("NoteAddStack");
+        }}
       >
         {({ isHovered, isFocused, isPressed }) => (
           <Center

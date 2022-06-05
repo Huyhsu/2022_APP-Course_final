@@ -5,11 +5,9 @@ import {
   Box,
   Text,
   Input,
-  Image,
   FormControl,
   TextArea,
   Pressable,
-  Button,
   WarningOutlineIcon,
   KeyboardAvoidingView,
   Center,
@@ -23,10 +21,13 @@ import {
 import { useTheme } from "@react-navigation/native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
+import { useDispatch, useSelector } from "react-redux";
+import { addCategory, selectCategorys } from "../redux/todoItemSlice";
+
 // 取得今日日期 ----------------------------------------------------------------------------
 const daysFull = ["週日", "週一", "週二", "週三", "週四", "週五", "週六"];
 
-export const getCurrentTime = () => {
+const getCurrentTime = () => {
   let today = new Date();
   let myYear = today.getFullYear();
   let myMonth = (today.getMonth() < 10 ? "0" : "") + (today.getMonth() + 1);
@@ -43,14 +44,16 @@ export const getCurrentTime = () => {
 // 選擇日期 ------------------------------------------------------------------------------
 const days = ["日", "一", "二", "三", "四", "五", "六"];
 
-export const InputWithDateTimePicker = (props) => {
-  // // Date and Time
-  const { dateText, setDateText, timeText, setTimeText } = props;
+const InputWithDateTimePicker = (props) => {
+  // timeText
+  const { timeText, setTimeText } = props;
+  // Date Text
+  const [dateText, setDateText] = useState("");
   // Date Time Picker
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
-  // 取得日期(設定日期文字)
+  // 取得日期(設定 Date Text)
   const getDate = (currentDate) => {
     let tempDate = new Date(currentDate);
     let fDate =
@@ -64,7 +67,7 @@ export const InputWithDateTimePicker = (props) => {
     let fDay = "(" + days[tempDate.getDay()] + ")";
     setDateText(fDate + " " + fDay + " ");
   };
-  // 取得時間(設定最終時間文字)
+  // 取得時間(設定 timeText)
   const getTime = (currentDate) => {
     let tempDate = new Date(currentDate);
     let fTime =
@@ -93,14 +96,13 @@ export const InputWithDateTimePicker = (props) => {
       return null;
     }
   };
+  // Date Time Picker Show(true) and Mode(date or time)
   const showMode = (currentMode) => {
     setShow(true);
     setMode(currentMode);
   };
-
+  // color
   const { colors } = useTheme();
-  const { colorMode } = useColorMode();
-
   return (
     <Box mt={4}>
       <FormControl isRequired>
@@ -151,12 +153,11 @@ export const InputWithDateTimePicker = (props) => {
   );
 };
 // 標題輸入 ------------------------------------------------------------------------------
-export const InputWithTitle = (props) => {
-  // Title
+const InputWithTitle = (props) => {
+  // title
   const { title, setTitle } = props;
-
+  // color
   const { colors } = useTheme();
-
   return (
     <Box>
       <FormControl isRequired>
@@ -177,12 +178,11 @@ export const InputWithTitle = (props) => {
   );
 };
 // 備註輸入 ------------------------------------------------------------------------------
-export const TextAreaWithNotes = (props) => {
-  // Notes
+const TextAreaWithNotes = (props) => {
+  // notes
   const { notes, setNotes } = props;
-
+  // color
   const { colors } = useTheme();
-
   return (
     <Box mt={4}>
       <FormControl>
@@ -202,27 +202,17 @@ export const TextAreaWithNotes = (props) => {
   );
 };
 // 類別輸入 ------------------------------------------------------------------------------
-export const InputOptionWithCategory = (props) => {
-  // Category
-  const { category, setCategory } = props;
-  // Native Base Modal
+const InputOptionWithCategory = (props) => {
+  // category and newCategory
+  const { category, setCategory, newCategory, setNewCategory } = props;
+  // native base modalVisible * 2
   const [modalVisible, setModalVisible] = useState(false);
   const [secondModalVisible, setSecondModalVisible] = useState(false);
-
+  // color
   const { colors } = useTheme();
-  const { colorMode } = useColorMode();
-
   return (
     <Box mt={4}>
       <FormControl isRequired>
-        {/* <FormControl.Label
-          _text={{
-            fontSize: "md",
-            color: colorMode == "light" ? colors.primary700 : colors.primary700,
-          }}
-        >
-          類別
-        </FormControl.Label> */}
         <Pressable
           onPress={() => {
             setModalVisible(!modalVisible);
@@ -266,6 +256,10 @@ export const InputOptionWithCategory = (props) => {
         />
 
         <ModalWithNewCategory
+          category={category}
+          setCategory={setCategory}
+          newCategory={newCategory}
+          setNewCategory={setNewCategory}
           modalVisible={secondModalVisible}
           setModalVisible={setSecondModalVisible}
         />
@@ -279,6 +273,9 @@ export const InputOptionWithCategory = (props) => {
 };
 // 選擇類別 Modal ------------------------------------------------------------------------
 const ModalWithCategory = (props) => {
+  // State
+  const categorysValue = useSelector(selectCategorys);
+  // category, modalVisible and secondModalVisible
   const {
     category,
     setCategory,
@@ -287,6 +284,7 @@ const ModalWithCategory = (props) => {
     nextModalVisible,
     setNextModalVisible,
   } = props;
+  // color
   const { colors } = useTheme();
   return (
     <Box>
@@ -303,40 +301,42 @@ const ModalWithCategory = (props) => {
               color: colors.Black,
               fontWeight: "normal",
             }}
+            bgColor={colors.White}
           >
             選擇類別
           </Modal.Header>
           <ScrollView>
             <Modal.Body>
-              <FormControl mt={4} isRequired>
+              <FormControl mt={4} px={2} isRequired>
                 <Radio.Group
+                  colorScheme={"teal"}
                   name="selecCategory"
                   value={category}
                   onChange={(nextValue) => {
                     setCategory(nextValue);
                   }}
                 >
-                  {/* {categoryList.categorys.length == 0 ? (
-                      <Text fontSize={"md"} color={colors.dark700}>
-                        請先建立一個類別
-                      </Text>
-                    ) : (
-                      categoryList.categorys.map((value, index) => (
-                        <Radio
-                          key={value + index}
-                          value={value}
-                          mx={1}
-                          my={1}
-                          _text={{ color: colors.dark700, fontSize: "md" }}
-                        >
-                          {" "}
-                          {value}
-                        </Radio>
-                      ))
-                    )} */}
-                  <Text fontSize={"md"} color={colors.dark700}>
-                    請先建立一個類別
-                  </Text>
+                  {categorysValue.length == 0 ? (
+                    <Text fontSize={"md"} color={colors.Black}>
+                      請先建立一個類別
+                    </Text>
+                  ) : (
+                    categorysValue.map((value, index) => (
+                      <Radio
+                        key={value + index}
+                        value={value}
+                        my={2}
+                        size={"sm"}
+                        _text={{
+                          color: colors.Black,
+                          fontSize: "md",
+                        }}
+                      >
+                        {" "}
+                        {value}
+                      </Radio>
+                    ))
+                  )}
                 </Radio.Group>
               </FormControl>
               <Pressable
@@ -355,13 +355,13 @@ const ModalWithCategory = (props) => {
                         ? colors.White
                         : colors.White
                     }
-                    borderRadius={5}
+                    borderRadius={4}
                     px={2}
                     py={1}
                     mt={4}
                     alignItems={"center"}
                   >
-                    <MaterialIcons name="add" size={16} color={colors.Black} />
+                    <MaterialIcons name="add" size={20} color={colors.Black} />
                     <Text color={colors.primary700} fontSize={"md"} ml={5}>
                       建立新類別
                     </Text>
@@ -371,31 +371,7 @@ const ModalWithCategory = (props) => {
             </Modal.Body>
           </ScrollView>
 
-          <Modal.Footer bgColor={colors.light100}>
-            {/* <Divider /> */}
-            {/* <Button.Group space={2}>
-              <Button
-                variant="ghost"
-                colorScheme="blueGray"
-                onPress={() => {
-                  setModalVisible(false);
-                  setCategory("");
-                  // setCategoryIsError(true);
-                }}
-              >
-                取消
-              </Button>
-              <Button
-                _text={{ color: colors.primary700 }}
-                bgColor={colors.light100}
-                onPress={() => {
-                  setModalVisible(false);
-                }}
-                isDisabled={category.length == 0}
-              >
-                確定
-              </Button>
-            </Button.Group> */}
+          <Modal.Footer bgColor={colors.White}>
             <HStack>
               <Pressable
                 mr={5}
@@ -405,14 +381,22 @@ const ModalWithCategory = (props) => {
                   // setCategoryIsError(true);
                 }}
               >
-                <Text fontSize={"md"}>取消</Text>
+                <Text fontSize={"md"} color={colors.Grey}>
+                  取消
+                </Text>
               </Pressable>
               <Pressable
+                isDisabled={category == ""}
                 onPress={() => {
                   setModalVisible(false);
                 }}
               >
-                <Text fontSize={"md"}>確認</Text>
+                <Text
+                  fontSize={"md"}
+                  color={category == "" ? colors.Grey : colors.Black}
+                >
+                  確認
+                </Text>
               </Pressable>
             </HStack>
           </Modal.Footer>
@@ -423,10 +407,31 @@ const ModalWithCategory = (props) => {
 };
 // 新增類別 Modal ------------------------------------------------------------------------
 const ModalWithNewCategory = (props) => {
-  // const {modalVisible, setModalVisible, newCategory, setNewCategory} = props;
-  const { modalVisible, setModalVisible } = props;
+  const categorysValue = useSelector(selectCategorys);
+  // Dispatch
+  const dispatch = useDispatch();
+  // category, newCategory and modalVisible
+  const {
+    category,
+    setCategory,
+    newCategory,
+    setNewCategory,
+    modalVisible,
+    setModalVisible,
+  } = props;
+  // color
   const { colors } = useTheme();
-  const { colorMode } = useColorMode();
+  // 非全為空白
+  const oneNotBlank = /\S/;
+  const checkNewCategoryValue = () => {
+    // 是否有填入
+    // 已有該類別
+    const alreadyHave = categorysValue.find((item) => item == newCategory);
+    if (alreadyHave == undefined) {
+      dispatch(addCategory(newCategory));
+    }
+  };
+
   return (
     <Box>
       <Modal
@@ -437,13 +442,14 @@ const ModalWithNewCategory = (props) => {
         size="lg"
         closeOnOverlayClick={false}
       >
-        <Modal.Content bgColor={colors.light100}>
+        <Modal.Content bgColor={colors.White} borderRadius={4}>
           <Modal.Header
             _text={{
               fontSize: "md",
               color: colors.Black,
               fontWeight: "normal",
             }}
+            bgColor={colors.White}
           >
             建立新類別
           </Modal.Header>
@@ -452,60 +458,45 @@ const ModalWithNewCategory = (props) => {
               <Input
                 placeholder={"類別名稱"}
                 fontSize={"md"}
-                // value={newCategory}
-                // onChangeText={(text) => setNewCategory(text)}
+                value={newCategory}
+                onChangeText={(text) => setNewCategory(text)}
                 color={colors.Black}
                 bgColor={colors.White}
               />
             </FormControl>
           </Modal.Body>
-          <Modal.Footer bgColor={colors.light100}>
-            {/* <Divider /> */}
-            {/* <Button.Group space={2}>
-              <Button
-                variant="ghost"
-                colorScheme="blueGray"
-                onPress={() => {
-                  setModalVisible(false);
-                  // setNewCategory("");
-                }}
-              >
-                取消
-              </Button>
-              <Button
-                onPress={() => {
-                  setModalVisible(false);
-                  // setCategory(newCategory);
-                  // setNewCategory("");
-                  // dispatch(addCategory(newCategory));
-                }}
-                _text={{ color: colors.primary700 }}
-                bgColor={colors.light100}
-                // isDisabled={newCategory.length == 0 || newCategory[0] == " "}
-              >
-                確定
-              </Button>
-            </Button.Group> */}
+          <Modal.Footer bgColor={colors.White}>
             <HStack>
               <Pressable
                 mr={5}
                 onPress={() => {
                   setModalVisible(false);
-                  // setCategory("");
+                  setCategory("");
+                  setNewCategory("");
                   // setCategoryIsError(true);
                 }}
               >
-                <Text fontSize={"md"}>取消</Text>
+                <Text fontSize={"md"} color={colors.Grey}>
+                  取消
+                </Text>
               </Pressable>
               <Pressable
+                isDisabled={!oneNotBlank.test(newCategory)}
                 onPress={() => {
                   setModalVisible(false);
-                  // setCategory(newCategory);
-                  // setNewCategory("");
-                  // dispatch(addCategory(newCategory));
+                  setCategory(newCategory);
+                  setNewCategory("");
+                  checkNewCategoryValue();
                 }}
               >
-                <Text fontSize={"md"}>確認</Text>
+                <Text
+                  fontSize={"md"}
+                  color={
+                    oneNotBlank.test(newCategory) ? colors.Black : colors.Grey
+                  }
+                >
+                  確認
+                </Text>
               </Pressable>
             </HStack>
           </Modal.Footer>
@@ -514,3 +505,96 @@ const ModalWithNewCategory = (props) => {
     </Box>
   );
 };
+// 事項劃分 ------------------------------------------------------------------------------
+const RadioWithDivide = (props) => {
+  // divide
+  const { divide, setDivide } = props;
+  // color
+  const { colors } = useTheme();
+  return (
+    <Box mt={8}>
+      <FormControl>
+        <Radio.Group
+          defaultValue="low"
+          name="selectDivide"
+          value={divide}
+          onChange={(nextValue) => {
+            setDivide(nextValue);
+          }}
+          flexDir={"row"}
+          justifyContent={"space-between"}
+          pr={6}
+        >
+          <Radio
+            value="high"
+            mx={2}
+            size={"sm"}
+            _text={{
+              fontSize: "md",
+              color: colors.Black,
+            }}
+            colorScheme="red"
+          >
+            <Text color={colors.Black} fontSize={"md"} p={0}>
+              優先
+            </Text>
+          </Radio>
+          <Radio
+            value="medium"
+            mx={2}
+            // ml={6}
+            size={"sm"}
+            _text={{ fontSize: "md", color: colors.Black }}
+            colorScheme="amber"
+          >
+            <Text color={colors.Black} fontSize={"md"} p={0}>
+              重要
+            </Text>
+          </Radio>
+          <Radio
+            value="low"
+            mx={2}
+            // ml={6}
+            size={"sm"}
+            _text={{ fontSize: "md", color: colors.Black }}
+            colorScheme="cyan"
+          >
+            <Text color={colors.Black} fontSize={"md"} p={0}>
+              普通
+            </Text>
+          </Radio>
+        </Radio.Group>
+        <FormControl.ErrorMessage>Something is wrong.</FormControl.ErrorMessage>
+      </FormControl>
+    </Box>
+  );
+};
+// 確認按鍵 ------------------------------------------------------------------------------
+const ConfirmButton = (props) => {
+  const { buttonText, onConfirmPress } = props;
+  // color
+  const { colors } = useTheme();
+  return (
+    <Pressable
+      onPress={() => onConfirmPress()}
+      bgColor={colors.Primary500}
+      px={4}
+      py={3}
+    >
+      <Text fontSize={"md"}>{buttonText}</Text>
+    </Pressable>
+  );
+};
+
+// Functions
+export { getCurrentTime };
+// Input Utils
+export {
+  InputWithTitle,
+  TextAreaWithNotes,
+  InputWithDateTimePicker,
+  InputOptionWithCategory,
+  RadioWithDivide,
+};
+// Button
+export { ConfirmButton };

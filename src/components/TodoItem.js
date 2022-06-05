@@ -13,15 +13,17 @@ import {
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import { useDispatch, useSelector } from "react-redux";
+import { selectTodoItems } from "../redux/todoItemSlice";
 
-// import { LogBox } from "react-native";
-// import { setEditItem, updateItem } from "../redux/actions";
-// import {  } from "react-native-gesture-handler";
-
-const TodoItem = () => {
-  // State
-  // const { itemList } = useSelector((state) => state.item);
-  // const dispatch = useDispatch();
+const TodoItem = ({
+  navigation,
+  todoItem,
+  todoItem: { title, time, divide, done },
+}) => {
+  // States
+  const itemsValue = useSelector(selectTodoItems);
+  // Dispatch
+  const dispatch = useDispatch();
 
   // 處理點擊
   const handleClick = () => {
@@ -46,8 +48,8 @@ const TodoItem = () => {
   // };
 
   // 處理過長標題
-  // let tempTitle = title;
-  // let tempTime = time.slice(5);
+  let tempTitle = title;
+  let tempTime = time.slice(5);
 
   const { colors } = useTheme();
 
@@ -82,24 +84,22 @@ const TodoItem = () => {
             name="circle"
             size={24}
             color={
-              // divide == "high"
-              //   ? colors.high700
-              //   : divide == "medium"
-              //   ? colors.medium700
-              //   : colors.low700
-              colors.High
+              divide == "high"
+                ? colors.High
+                : divide == "medium"
+                ? colors.Medium
+                : colors.Low
             }
           />
           <VStack ml={6} pt={1}>
             <Text color={colors.Primary900} fontSize={"lg"}>
-              {/* {tempTitle.length > 10
-                    ? tempTitle.substring(0, 10) + "..."
-                    : tempTitle} */}
-              行動程式設計期末作業123
+              {tempTitle.length > 10
+                ? tempTitle.substring(0, 10) + "..."
+                : tempTitle}
             </Text>
             <Text color={colors.Grey} fontSize={"sm"}>
-              {/* {tempTime} */}
-              2022 06/09 (四) 12:30
+              {tempTime}
+              {/* 2022 06/09 (四) 12:30 */}
             </Text>
           </VStack>
         </HStack>

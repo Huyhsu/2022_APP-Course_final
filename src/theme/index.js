@@ -30,6 +30,6 @@ export const darkTheme = {
     High: "#FFA176",
     Medium: "#F2C94C",
     Low: "#ACD4DE",
-    Black: "#444444",
+    Black: "#FAFAFA",
   },
 };

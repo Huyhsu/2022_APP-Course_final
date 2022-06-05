@@ -4,19 +4,19 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 // Top Tabs
 import HomeTopTabs from "./topTabs";
 // Stacks
-import { HomeStack, SettingsStack } from "./stacks";
+import { HomeStack, SettingsStack, NoteAddStack } from "./stacks";
 // Custom Header
 import SearchBarHeader from "../components/SearchBarHeader";
 import NoteAddScreen from "../screens/NoteAddSceen";
 
 const Tab = createBottomTabNavigator();
 
-// Bottom Tabs (Home + Calendar + Settings)
+// Bottom Tabs (HomeTopTabs + Calendar + Settings)
 const BottomTabs = () => {
   const { colors } = useTheme();
   return (
     <Tab.Navigator
-      initialRouteName="HomeTobTabs"
+      initialRouteName="HomeTopTabs"
       screenOptions={{
         headerShown: false,
         headerStatusBarHeight: 32,
@@ -39,7 +39,7 @@ const BottomTabs = () => {
       }}
     >
       <Tab.Screen
-        name="HomeTobTabs"
+        name="HomeTopTabs"
         component={HomeTopTabs}
         options={{
           headerShown: true,
@@ -105,6 +105,18 @@ const BottomTabs = () => {
               )}
             </>
           ),
+        }}
+      />
+      <Tab.Screen
+        name="NoteAddStack"
+        component={NoteAddStack}
+        options={{
+          tabBarButton: () => null,
+          tabBarIcon: () => null,
+          title: "",
+          tabBarStyle: {
+            display: "none",
+          },
         }}
       />
     </Tab.Navigator>
