@@ -12,22 +12,31 @@ import {
 } from "native-base";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
-import { useDispatch, useSelector } from "react-redux";
-import { selectTodoItems } from "../redux/todoItemSlice";
+import { useDispatch } from "react-redux";
+import { setCurrentEditTodoItem } from "../redux/todoItemSlice";
 
 const TodoItem = ({
   navigation,
   todoItem,
-  todoItem: { title, time, divide, done },
+  todoItem: { title, timeText, divide, done },
 }) => {
   // States
-  const itemsValue = useSelector(selectTodoItems);
+
   // Dispatch
   const dispatch = useDispatch();
 
   // 處理點擊
   const handleClick = () => {
     // checkItemValue();
+  };
+
+  const onItemPress = () => {
+    dispatch(setCurrentEditTodoItem(todoItem));
+    navigation.navigate("NoteEditStack", {
+      screen: "NoteEdit",
+      params: todoItem,
+    });
+    console.log("takoshort");
   };
 
   // 暴力找出相同物件之 index, 並呼叫 updateItem
@@ -49,7 +58,7 @@ const TodoItem = ({
 
   // 處理過長標題
   let tempTitle = title;
-  let tempTime = time.slice(5);
+  let tempTime = timeText.slice(5);
 
   const { colors } = useTheme();
 
@@ -66,14 +75,7 @@ const TodoItem = ({
         pr={4}
         h={"100%"}
         w={"100%"}
-        onPress={() => {
-          // dispatch(setEditItem(item));
-          navigation.navigate("NoteEditStack", {
-            screen: "NoteEdit",
-            params: todoItem,
-          });
-          console.log("takoshort");
-        }}
+        onPress={() => onItemPress()}
         onLongPress={() => console.log("TAKOLONG")}
         flexDir={"row"}
         justifyContent={"space-between"}

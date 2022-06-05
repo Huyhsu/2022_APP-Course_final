@@ -12,15 +12,13 @@ import {
   CancelButton,
 } from "../utils";
 
-import { useDispatch, useSelector } from "react-redux";
-import { addTodoItem, selectCategorys } from "../redux/todoItemSlice";
+import { useDispatch } from "react-redux";
+import { addTodoItem } from "../redux/todoItemSlice";
 
 const NoteAddScreen = ({ navigation }) => {
-  // State
-  const categorys = useSelector(selectCategorys);
   // Dispatch
   const dispatch = useDispatch();
-  // compare time
+  // to compare time
   const timePattern = /\//g;
   // Title
   const [title, setTitle] = useState("");
@@ -35,25 +33,59 @@ const NoteAddScreen = ({ navigation }) => {
   // New Todo Item Category
   const [newCategory, setNewCategory] = useState("");
 
-  // 確認輸入
+  // error check
+  const [isCheck, setIsCheck] = useState(false);
+  const [isTitleError, setIsTitleError] = useState(true);
+  const [isTimeTextError, setIsTimeTextError] = useState(true);
+  const [isCategoryError, setIsCategoryError] = useState(true);
+  // title pattern
+  const oneNotBlank = /\S/;
+
+  // 確認輸入值
   const checkInputValues = () => {
-    createTodoItem();
-    resetFormInput();
+    if (title.length == 0 || !oneNotBlank.test(title)) {
+      setIsTitleError(true);
+    }
+    if (timeText.length == 0) {
+      setIsTimeTextError(true);
+    }
+    if (category.length == 0) {
+      setIsCategoryError(true);
+    }
   };
+  // 確認是否錯誤，無誤就新增 todo item 並返回 Home
+  const checkInputError = () => {
+    if (!isTitleError && !isTimeTextError && !isCategoryError) {
+      console.log("Correct");
+      createTodoItem();
+      resetFormInput();
+      navigation.navigate("HomeTopTabs");
+    } else {
+      console.log("Error !");
+    }
+  };
+
+  useEffect(() => {
+    title.length != 0 && oneNotBlank.test(title)
+      ? setIsTitleError(false)
+      : setIsTitleError(true);
+    timeText.length != 0 ? setIsTimeTextError(false) : setIsTimeTextError(true);
+    category.length != 0 ? setIsCategoryError(false) : setIsCategoryError(true);
+  }, [title, timeText, category]);
+
   // 建立 Todo Item
   const createTodoItem = () => {
-    let newItem = {
+    let newTodoItem = {
       title: title,
       notes: notes,
-      time: timeText,
+      timeText: timeText,
       category: category,
       divide: divide,
       done: false,
       compareTime: timeText.replace(timePattern, "").slice(0, 8),
       selectTime: timeText.replace(timePattern, "-").slice(0, 10),
     };
-    dispatch(addTodoItem(newItem));
-    navigation.navigate("HomeTopTabs");
+    dispatch(addTodoItem(newTodoItem));
   };
   // 重設表單輸入
   const resetFormInput = () => {
@@ -62,15 +94,17 @@ const NoteAddScreen = ({ navigation }) => {
     setTimeText("");
     setCategory("");
     setDivide("low");
-    // setIsCheck(false);
-    // setTitleIsError(true);
-    // setTimeIsError(true);
-    // setCategoryIsError(true);
+    setIsCheck(false);
+    setIsTitleError(true);
+    setIsTimeTextError(true);
+    setIsCategoryError(true);
   };
 
   // 按下新增
   const onConfirmPress = () => {
+    setIsCheck(true);
     checkInputValues();
+    checkInputError();
   };
   // 按下取消
   const onCancelPress = () => {
@@ -78,21 +112,37 @@ const NoteAddScreen = ({ navigation }) => {
     navigation.navigate("HomeTopTabs");
   };
 
+  const onTestConsolePress = () => {
+    // console.log("");
+  };
+
   // color
   const { colors } = useTheme();
 
   return (
     <Box flex={1} bgColor={colors.Background} p={10}>
-      <InputWithTitle title={title} setTitle={setTitle} />
+      <InputWithTitle
+        title={title}
+        setTitle={setTitle}
+        isCheck={isCheck}
+        isTitleError={isTitleError}
+      />
       <TextAreaWithNotes notes={notes} setNotes={setNotes} />
-      <InputWithDateTimePicker timeText={timeText} setTimeText={setTimeText} />
+      <InputWithDateTimePicker
+        timeText={timeText}
+        setTimeText={setTimeText}
+        isCheck={isCheck}
+        isTimeTextError={isTimeTextError}
+      />
       <InputOptionWithCategory
         category={category}
         setCategory={setCategory}
         newCategory={newCategory}
         setNewCategory={setNewCategory}
+        isCheck={isCheck}
+        isCategoryError={isCategoryError}
       />
-      <RadioWithDivide divie={divide} setDivide={setDivide} />
+      <RadioWithDivide divide={divide} setDivide={setDivide} />
 
       <HStack mt={6} justifyContent={"flex-end"}>
         <Box mr={2}>
@@ -101,6 +151,12 @@ const NoteAddScreen = ({ navigation }) => {
         <Box>
           <CancelButton buttonText={"取消"} onCancelPress={onCancelPress} />
         </Box>
+        {/* <Box>
+          <CancelButton
+            buttonText={"測試"}
+            onCancelPress={onTestConsolePress}
+          />
+        </Box> */}
       </HStack>
     </Box>
   );

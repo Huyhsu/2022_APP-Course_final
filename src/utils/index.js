@@ -46,7 +46,7 @@ const days = ["日", "一", "二", "三", "四", "五", "六"];
 
 const InputWithDateTimePicker = (props) => {
   // timeText
-  const { timeText, setTimeText } = props;
+  const { timeText, setTimeText, isCheck, isTimeTextError } = props;
   // Date Text
   const [dateText, setDateText] = useState("");
   // Date Time Picker
@@ -105,7 +105,7 @@ const InputWithDateTimePicker = (props) => {
   const { colors } = useTheme();
   return (
     <Box mt={4}>
-      <FormControl isRequired>
+      <FormControl isRequired isInvalid={isTimeTextError && isCheck}>
         <Pressable onPress={() => showMode("date")}>
           {({ isHovered, isFocused, isPressed }) => (
             <Input
@@ -136,7 +136,7 @@ const InputWithDateTimePicker = (props) => {
           )}
         </Pressable>
         <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-          請選擇日期!
+          請選擇日期
         </FormControl.ErrorMessage>
       </FormControl>
       {show && (
@@ -155,12 +155,12 @@ const InputWithDateTimePicker = (props) => {
 // 標題輸入 ------------------------------------------------------------------------------
 const InputWithTitle = (props) => {
   // title
-  const { title, setTitle } = props;
+  const { title, setTitle, isCheck, isTitleError } = props;
   // color
   const { colors } = useTheme();
   return (
     <Box>
-      <FormControl isRequired>
+      <FormControl isRequired isInvalid={isTitleError && isCheck}>
         <Input
           placeholder={"標題*"}
           fontSize={"md"}
@@ -171,7 +171,7 @@ const InputWithTitle = (props) => {
           color={colors.Black}
         />
         <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-          請輸入標題!
+          請輸入非全空白的標題
         </FormControl.ErrorMessage>
       </FormControl>
     </Box>
@@ -204,7 +204,14 @@ const TextAreaWithNotes = (props) => {
 // 類別輸入 ------------------------------------------------------------------------------
 const InputOptionWithCategory = (props) => {
   // category and newCategory
-  const { category, setCategory, newCategory, setNewCategory } = props;
+  const {
+    category,
+    setCategory,
+    newCategory,
+    setNewCategory,
+    isCheck,
+    isCategoryError,
+  } = props;
   // native base modalVisible * 2
   const [modalVisible, setModalVisible] = useState(false);
   const [secondModalVisible, setSecondModalVisible] = useState(false);
@@ -212,7 +219,7 @@ const InputOptionWithCategory = (props) => {
   const { colors } = useTheme();
   return (
     <Box mt={4}>
-      <FormControl isRequired>
+      <FormControl isRequired isInvalid={isCategoryError && isCheck}>
         <Pressable
           onPress={() => {
             setModalVisible(!modalVisible);
@@ -265,7 +272,7 @@ const InputOptionWithCategory = (props) => {
         />
 
         <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-          請選擇一項類別!
+          請選擇一項類別
         </FormControl.ErrorMessage>
       </FormControl>
     </Box>
@@ -421,7 +428,7 @@ const ModalWithNewCategory = (props) => {
   } = props;
   // color
   const { colors } = useTheme();
-  // 非全為空白
+  // 一非空白
   const oneNotBlank = /\S/;
   const checkNewCategoryValue = () => {
     // 是否有填入
@@ -513,9 +520,10 @@ const RadioWithDivide = (props) => {
   const { colors } = useTheme();
   return (
     <Box mt={8}>
-      <FormControl>
+      <FormControl isRequired>
         <Radio.Group
-          defaultValue="low"
+          // defaultValue={divide}
+          defaultValue={"low"}
           name="selectDivide"
           value={divide}
           onChange={(nextValue) => {
