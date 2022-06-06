@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Box, Text, Pressable, Center, HStack } from "native-base";
 import { useTheme } from "@react-navigation/native";
+import { Box, HStack } from "native-base";
 
 import {
   InputWithTitle,
@@ -14,23 +14,24 @@ import {
 
 import { useDispatch, useSelector } from "react-redux";
 import {
-  addTodoItem,
-  updateCurrentEditTodoItem,
   setCurrentEditTodoItem,
+  editTodoItem,
   selectTodoItems,
   selectCurrentEditTodoItem,
 } from "../redux/todoItemSlice";
 
 const NoteEditScreen = ({ navigation, route: { params } }) => {
-  // Selected Todo Item
+  // selected todoItem params from TodoItem
   const { title, notes, timeText, category, divide, done } = params;
-  // State
+  // States
   const todoItemsValue = useSelector(selectTodoItems);
   const currentEditTodoItemValue = useSelector(selectCurrentEditTodoItem);
   // Dispatch
   const dispatch = useDispatch();
-  // to compare time
+  // time pattern to compare time
   const timePattern = /\//g;
+  // title pattern
+  const oneNotBlank = /\S/;
 
   // set title
   const setCurrentEditTodoItemTitle = (value) => {
@@ -55,15 +56,11 @@ const NoteEditScreen = ({ navigation, route: { params } }) => {
 
   // New Todo Item Category
   const [newCategory, setNewCategory] = useState("");
-
-  // error check
+  // error check (default false)
   const [isCheck, setIsCheck] = useState(false);
-  const [isTitleError, setIsTitleError] = useState(true);
-  const [isTimeTextError, setIsTimeTextError] = useState(true);
-  const [isCategoryError, setIsCategoryError] = useState(true);
-  // title pattern
-  const oneNotBlank = /\S/;
-
+  const [isTitleError, setIsTitleError] = useState(false);
+  const [isTimeTextError, setIsTimeTextError] = useState(false);
+  const [isCategoryError, setIsCategoryError] = useState(false);
   // 確認輸入值
   const checkInputValues = () => {
     if (
@@ -79,18 +76,18 @@ const NoteEditScreen = ({ navigation, route: { params } }) => {
       setIsCategoryError(true);
     }
   };
-  // 確認是否錯誤，無誤就新增 todo item 並返回 Home
+  // 確認是否錯誤，無誤就更新 todo item 並返回 Home
   const checkInputError = () => {
     if (!isTitleError && !isTimeTextError && !isCategoryError) {
-      console.log("Correct");
-      editCurrentTodoItem();
+      console.log("Edit the Todo Item");
+      updateTodoItem();
       resetFormInput();
       navigation.navigate("HomeTopTabs");
     } else {
-      console.log("Error !");
+      console.log("Error! Can't Edit the Todo Item");
     }
   };
-
+  // 偵測輸入錯誤
   useEffect(() => {
     currentEditTodoItemValue.title.length != 0 &&
     oneNotBlank.test(currentEditTodoItemValue.title)
@@ -107,9 +104,8 @@ const NoteEditScreen = ({ navigation, route: { params } }) => {
     currentEditTodoItemValue.timeText,
     currentEditTodoItemValue.category,
   ]);
-
   // 更新 Todo Item
-  const editCurrentTodoItem = () => {
+  const updateTodoItem = () => {
     let updatedTodoItem = {
       title: currentEditTodoItemValue.title,
       notes: currentEditTodoItemValue.notes,
@@ -124,6 +120,7 @@ const NoteEditScreen = ({ navigation, route: { params } }) => {
         .replace(timePattern, "-")
         .slice(0, 10),
     };
+    // 尋找一開始所點擊 todo item 的 index
     const updatedTodoItemIndex = todoItemsValue.findIndex(
       (value) =>
         value.title == title &&
@@ -135,16 +132,16 @@ const NoteEditScreen = ({ navigation, route: { params } }) => {
     if (updatedTodoItemIndex == -1) {
       console.log("Error! Can't Find the TodoItem to Edit!");
     }
-    dispatch(updateCurrentEditTodoItem(updatedTodoItem, updatedTodoItemIndex));
+    // 傳入更新後的 todo item 與 原來之 index
+    dispatch(editTodoItem({ updatedTodoItem, updatedTodoItemIndex }));
   };
   // 重設表單輸入
   const resetFormInput = () => {
     setIsCheck(false);
-    setIsTitleError(true);
-    setIsTimeTextError(true);
-    setIsCategoryError(true);
+    setIsTitleError(false);
+    setIsTimeTextError(false);
+    setIsCategoryError(false);
   };
-
   // 按下確認
   const onConfirmPress = () => {
     setIsCheck(true);
@@ -153,18 +150,11 @@ const NoteEditScreen = ({ navigation, route: { params } }) => {
   };
   // 按下取消
   const onCancelPress = () => {
-    // resetFormInput();
-    // navigation.navigate("HomeTopTabs");
-    console.log(currentEditTodoItemValue);
+    resetFormInput();
+    navigation.navigate("HomeTopTabs");
   };
-
-  const onTestConsolePress = () => {
-    // console.log("");
-  };
-
   // color
   const { colors } = useTheme();
-
   return (
     <Box flex={1} bgColor={colors.Background} p={10}>
       <InputWithTitle
@@ -195,7 +185,6 @@ const NoteEditScreen = ({ navigation, route: { params } }) => {
         divide={currentEditTodoItemValue.divide}
         setDivide={setCurrentEditTodoItemDivide}
       />
-
       <HStack mt={6} justifyContent={"flex-end"}>
         <Box mr={2}>
           <CancelButton buttonText={"取消"} onCancelPress={onCancelPress} />
@@ -203,12 +192,6 @@ const NoteEditScreen = ({ navigation, route: { params } }) => {
         <Box>
           <ConfirmButton buttonText={"確認"} onConfirmPress={onConfirmPress} />
         </Box>
-        {/* <Box>
-          <CancelButton
-            buttonText={"測試"}
-            onCancelPress={onTestConsolePress}
-          />
-        </Box> */}
       </HStack>
     </Box>
   );

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Box, Text, Pressable, Center, HStack } from "native-base";
 import { useTheme } from "@react-navigation/native";
+import { Box, HStack } from "native-base";
 
 import {
   InputWithTitle,
@@ -18,8 +18,11 @@ import { addTodoItem } from "../redux/todoItemSlice";
 const NoteAddScreen = ({ navigation }) => {
   // Dispatch
   const dispatch = useDispatch();
-  // to compare time
+  // time pattern to compare time
   const timePattern = /\//g;
+  // title pattern
+  const oneNotBlank = /\S/;
+
   // Title
   const [title, setTitle] = useState("");
   // Notes
@@ -33,13 +36,11 @@ const NoteAddScreen = ({ navigation }) => {
   // New Todo Item Category
   const [newCategory, setNewCategory] = useState("");
 
-  // error check
+  // error check (default true)
   const [isCheck, setIsCheck] = useState(false);
   const [isTitleError, setIsTitleError] = useState(true);
   const [isTimeTextError, setIsTimeTextError] = useState(true);
   const [isCategoryError, setIsCategoryError] = useState(true);
-  // title pattern
-  const oneNotBlank = /\S/;
 
   // 確認輸入值
   const checkInputValues = () => {
@@ -56,15 +57,15 @@ const NoteAddScreen = ({ navigation }) => {
   // 確認是否錯誤，無誤就新增 todo item 並返回 Home
   const checkInputError = () => {
     if (!isTitleError && !isTimeTextError && !isCategoryError) {
-      console.log("Correct");
+      console.log("Add New Todo Item");
       createTodoItem();
       resetFormInput();
       navigation.navigate("HomeTopTabs");
     } else {
-      console.log("Error !");
+      console.log("Error! Can't Add New Todo Item");
     }
   };
-
+  // 偵測輸入錯誤
   useEffect(() => {
     title.length != 0 && oneNotBlank.test(title)
       ? setIsTitleError(false)
@@ -72,7 +73,6 @@ const NoteAddScreen = ({ navigation }) => {
     timeText.length != 0 ? setIsTimeTextError(false) : setIsTimeTextError(true);
     category.length != 0 ? setIsCategoryError(false) : setIsCategoryError(true);
   }, [title, timeText, category]);
-
   // 建立 Todo Item
   const createTodoItem = () => {
     let newTodoItem = {
@@ -99,7 +99,6 @@ const NoteAddScreen = ({ navigation }) => {
     setIsTimeTextError(true);
     setIsCategoryError(true);
   };
-
   // 按下新增
   const onConfirmPress = () => {
     setIsCheck(true);
@@ -111,14 +110,8 @@ const NoteAddScreen = ({ navigation }) => {
     resetFormInput();
     navigation.navigate("HomeTopTabs");
   };
-
-  const onTestConsolePress = () => {
-    // console.log("");
-  };
-
   // color
   const { colors } = useTheme();
-
   return (
     <Box flex={1} bgColor={colors.Background} p={10}>
       <InputWithTitle
@@ -151,12 +144,6 @@ const NoteAddScreen = ({ navigation }) => {
         <Box>
           <CancelButton buttonText={"取消"} onCancelPress={onCancelPress} />
         </Box>
-        {/* <Box>
-          <CancelButton
-            buttonText={"測試"}
-            onCancelPress={onTestConsolePress}
-          />
-        </Box> */}
       </HStack>
     </Box>
   );

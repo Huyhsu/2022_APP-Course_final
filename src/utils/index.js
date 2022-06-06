@@ -203,7 +203,7 @@ const TextAreaWithNotes = (props) => {
 };
 // 類別輸入 ------------------------------------------------------------------------------
 const InputOptionWithCategory = (props) => {
-  // category and newCategory
+  // category, newCategory, and check
   const {
     category,
     setCategory,
@@ -426,19 +426,29 @@ const ModalWithNewCategory = (props) => {
     modalVisible,
     setModalVisible,
   } = props;
-  // color
-  const { colors } = useTheme();
-  // 一非空白
+
+  // category pattern
   const oneNotBlank = /\S/;
+  // check new category
+  const [isNewCategoryError, setIsNewCategoryError] = useState(false);
+  // 確認輸入的類別名稱
   const checkNewCategoryValue = () => {
-    // 是否有填入
-    // 已有該類別
     const alreadyHave = categorysValue.find((item) => item == newCategory);
+    // 還沒有該類別存在
     if (alreadyHave == undefined) {
       dispatch(addCategory(newCategory));
+      setCategory(newCategory);
+      setNewCategory("");
+      setModalVisible(false);
+    }
+    // 已有該類別
+    else {
+      setIsNewCategoryError(true);
+      console.log("Already Have that category!");
     }
   };
-
+  // color
+  const { colors } = useTheme();
   return (
     <Box>
       <Modal
@@ -461,7 +471,7 @@ const ModalWithNewCategory = (props) => {
             建立新類別
           </Modal.Header>
           <Modal.Body>
-            <FormControl>
+            <FormControl isInvalid={isNewCategoryError}>
               <Input
                 placeholder={"類別名稱"}
                 fontSize={"md"}
@@ -470,6 +480,11 @@ const ModalWithNewCategory = (props) => {
                 color={colors.Black}
                 bgColor={colors.White}
               />
+              <FormControl.ErrorMessage
+                leftIcon={<WarningOutlineIcon size="xs" />}
+              >
+                此類別已存在
+              </FormControl.ErrorMessage>
             </FormControl>
           </Modal.Body>
           <Modal.Footer bgColor={colors.White}>
@@ -480,7 +495,7 @@ const ModalWithNewCategory = (props) => {
                   setModalVisible(false);
                   setCategory("");
                   setNewCategory("");
-                  // setCategoryIsError(true);
+                  setIsNewCategoryError(false);
                 }}
               >
                 <Text fontSize={"md"} color={colors.Grey}>
@@ -490,9 +505,6 @@ const ModalWithNewCategory = (props) => {
               <Pressable
                 isDisabled={!oneNotBlank.test(newCategory)}
                 onPress={() => {
-                  setModalVisible(false);
-                  setCategory(newCategory);
-                  setNewCategory("");
                   checkNewCategoryValue();
                 }}
               >
@@ -640,7 +652,7 @@ const CancelButton = (props) => {
 // ===================================================================================
 // Functions
 export { getCurrentTime };
-// Input Utils
+// Form Input Utils
 export {
   InputWithTitle,
   TextAreaWithNotes,

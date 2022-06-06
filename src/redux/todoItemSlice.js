@@ -33,23 +33,23 @@ const todoItemSlice = createSlice({
     addTodoItem: (state, action) => {
       state.todoItems = [...state.todoItems, action.payload];
     },
+    addCategory: (state, action) => {
+      state.categorys = [...state.categorys, action.payload];
+    },
     setCurrentEditTodoItem: (state, action) => {
       state.currentEditTodoItem = {
         ...state.currentEditTodoItem,
         ...action.payload,
       };
     },
-    updateCurrentEditTodoItem: (state, action) => {
+    editTodoItem: (state, action) => {
       const updatedTodoItem = action.payload.updatedTodoItem;
-      console.log(updatedTodoItem);
+      // console.log(updatedTodoItem);
       const updatedTodoItemIndex = action.payload.updatedTodoItemIndex;
-      console.log(updatedTodoItemIndex);
+      // console.log(updatedTodoItemIndex);
       const currentTodoItems = [...state.todoItems];
       currentTodoItems[updatedTodoItemIndex] = updatedTodoItem;
       state.todoItems = [...currentTodoItems];
-    },
-    addCategory: (state, action) => {
-      state.categorys = [...state.categorys, action.payload];
     },
   },
 });
@@ -64,7 +64,7 @@ export const {
   addTodoItem,
   addCategory,
   setCurrentEditTodoItem,
-  updateCurrentEditTodoItem,
+  editTodoItem,
 } = todoItemSlice.actions;
 // Reducer
 export default todoItemSlice.reducer;
