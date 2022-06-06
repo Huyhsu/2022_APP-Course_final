@@ -1,5 +1,5 @@
-import { Box, Text, FlatList, HStack, Image } from "native-base";
 import { useTheme } from "@react-navigation/native";
+import { Box, Text, FlatList, HStack, Image, Pressable } from "native-base";
 
 import TodoItem from "../components/TodoItem";
 

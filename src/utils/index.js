@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Platform } from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import { useTheme } from "@react-navigation/native";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import {
   Box,
   Text,
@@ -18,8 +19,12 @@ import {
   Divider,
   HStack,
 } from "native-base";
-import { useTheme } from "@react-navigation/native";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import DraggableFlatList, {
+  NestableDraggableFlatList,
+  NestableScrollContainer,
+  ScaleDecorator,
+} from "react-native-draggable-flatlist";
 
 import { useDispatch, useSelector } from "react-redux";
 import { addCategory, selectCategorys } from "../redux/todoItemSlice";
@@ -649,6 +654,162 @@ const CancelButton = (props) => {
     </Pressable>
   );
 };
+// 類別排序 Modal ------------------------------------------------------------------------
+const ModalWithCategorysToEdit = (props) => {
+  // State
+  const categorysValue = useSelector(selectCategorys);
+  // category, modalVisible and secondModalVisible
+  const { modalVisible, setModalVisible } = props;
+
+  // Edit Category Name Modal
+  const [editCategoryNameModalVisible, setEditCategoryNameModalVisible] =
+    useState(false);
+  // Add Category Modal
+  const [addCategoryModalVisible, setAddCategoryModalVisible] = useState(false);
+
+  // color
+  const { colors } = useTheme();
+
+  const renderItem = ({ item, index, drag, isActive }) => (
+    <ScaleDecorator>
+      <Pressable onLongPress={drag} bgColor={"red.100"} px={4} py={4} mt={2}>
+        <Text>{item}</Text>
+      </Pressable>
+    </ScaleDecorator>
+  );
+
+  const [testData, setTestData] = useState(["one", "two", "three", "four"]);
+
+  return (
+    <Box>
+      <Modal
+        isOpen={modalVisible}
+        onClose={() => setModalVisible(false)}
+        avoidKeyboard
+        size="lg"
+      >
+        <Modal.Content bgColor={colors.White} borderRadius={4}>
+          <Modal.Header
+            _text={{
+              fontSize: "md",
+              color: colors.Black,
+              fontWeight: "normal",
+            }}
+            bgColor={colors.White}
+          >
+            編輯類別
+          </Modal.Header>
+          <Modal.Body
+          // p={0}
+          >
+            <NestableScrollContainer>
+              <NestableDraggableFlatList
+                data={testData}
+                renderItem={renderItem}
+                keyExtractor={(item, index) => item + index}
+                onDragEnd={({ data }) => setTestData(data)}
+              />
+            </NestableScrollContainer>
+
+            {/* <FormControl mt={4} px={2} isRequired>
+                <Radio.Group
+                  colorScheme={"teal"}
+                  name="selecCategory"
+                  value={category}
+                  onChange={(nextValue) => {
+                    setCategory(nextValue);
+                  }}
+                >
+                  {categorysValue.length == 0 ? (
+                    <Text fontSize={"md"} color={colors.Black}>
+                      請先建立一個類別
+                    </Text>
+                  ) : (
+                    categorysValue.map((value, index) => (
+                      <Radio
+                        key={value + index}
+                        value={value}
+                        my={2}
+                        size={"sm"}
+                        _text={{
+                          color: colors.Black,
+                          fontSize: "md",
+                        }}
+                      >
+                        {" "}
+                        {value}
+                      </Radio>
+                    ))
+                  )}
+                </Radio.Group>
+              </FormControl> */}
+            <Pressable
+              onPress={() => {
+                setModalVisible(false);
+                setNextModalVisible(!nextModalVisible);
+              }}
+            >
+              {({ isHovered, isFocused, isPressed }) => (
+                <HStack
+                  color={colors.Black}
+                  bgColor={
+                    isPressed
+                      ? colors.Background
+                      : isHovered
+                      ? colors.White
+                      : colors.White
+                  }
+                  borderRadius={4}
+                  px={2}
+                  py={1}
+                  mt={4}
+                  alignItems={"center"}
+                >
+                  <MaterialIcons name="add" size={20} color={colors.Black} />
+                  <Text color={colors.primary700} fontSize={"md"} ml={5}>
+                    建立新類別
+                  </Text>
+                </HStack>
+              )}
+            </Pressable>
+          </Modal.Body>
+
+          <Modal.Footer bgColor={colors.White}>
+            <HStack>
+              <Pressable
+                mr={5}
+                onPress={() => {
+                  // setModalVisible(false);
+                  // setCategory("");
+                  // setCategoryIsError(true);
+                  console.log(testData);
+                }}
+              >
+                <Text fontSize={"md"} color={colors.Grey}>
+                  取消
+                </Text>
+              </Pressable>
+              <Pressable
+                // isDisabled={category == ""}
+                onPress={() => {
+                  // setModalVisible(false);
+                }}
+              >
+                <Text
+                  fontSize={"md"}
+                  // color={category == "" ? colors.Grey : colors.Black}
+                >
+                  確認
+                </Text>
+              </Pressable>
+            </HStack>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
+    </Box>
+  );
+};
+
 // ===================================================================================
 // Functions
 export { getCurrentTime };
@@ -660,5 +821,7 @@ export {
   InputOptionWithCategory,
   RadioWithDivide,
 };
+// Modal
+export { ModalWithCategorysToEdit };
 // Button
 export { ConfirmButton, CancelButton };

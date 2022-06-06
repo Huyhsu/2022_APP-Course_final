@@ -1,9 +1,28 @@
+import { useState, useEffect } from "react";
 import { useTheme } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Box, Center, Input, Pressable, Menu } from "native-base";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
+import { ModalWithCategorysToEdit } from "../utils";
+
 const SearchBarHeader = (props) => {
+  // Edit Category Modal
+  const [editCategoryModalVisible, setEditCategoryModalVisible] =
+    useState(false);
+
+  // Delete Category Modal
+  const [deleteCategoryModalVisible, setDeleteCategoryModalVisible] =
+    useState(false);
+  // Delete Category Check Modal
+  const [deleteCategoryCheckModalVisible, setDeleteCategoryCheckModalVisible] =
+    useState(false);
+
+  const onEditCategoryPress = () => {
+    console.log("Select Edit Category");
+    setEditCategoryModalVisible(true);
+  };
+
   const { colors } = useTheme();
   return (
     <SafeAreaView>
@@ -57,7 +76,7 @@ const SearchBarHeader = (props) => {
               );
             }}
           >
-            <Menu.Item onPress={() => console.log("Select Edit Category")}>
+            <Menu.Item onPress={() => onEditCategoryPress()}>
               編輯類別
             </Menu.Item>
             <Menu.Item onPress={() => console.log("Select remove Category")}>
@@ -65,6 +84,10 @@ const SearchBarHeader = (props) => {
             </Menu.Item>
           </Menu>
         </Center>
+        <ModalWithCategorysToEdit
+          modalVisible={editCategoryModalVisible}
+          setModalVisible={setEditCategoryModalVisible}
+        />
       </Box>
     </SafeAreaView>
   );
