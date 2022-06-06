@@ -71,7 +71,7 @@ const SearchBarHeader = (props) => {
             ></MaterialIcons>
           </Pressable> */}
           <Menu
-            mr={4}
+            mr={5}
             trigger={(triggerProps) => {
               return (
                 <Pressable
@@ -89,10 +89,16 @@ const SearchBarHeader = (props) => {
               );
             }}
           >
-            <Menu.Item onPress={() => onEditCategoryPress()}>
+            <Menu.Item
+              _text={{ fontSize: "md", color: colors.Black }}
+              onPress={() => onEditCategoryPress()}
+            >
               編輯類別
             </Menu.Item>
-            <Menu.Item onPress={() => console.log("Select remove Category")}>
+            <Menu.Item
+              _text={{ fontSize: "md", color: colors.Black }}
+              onPress={() => console.log("Select remove Category")}
+            >
               移除類別
             </Menu.Item>
           </Menu>

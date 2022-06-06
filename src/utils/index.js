@@ -690,9 +690,18 @@ const ModalWithCategorysToEdit = (props) => {
   const [newCategory, setNewCategory] = useState("");
   // edit category name
   const [updatedCategoryName, setUpdatedCategoryName] = useState("");
+  const [initialCategoryName, setInitialCategoryName] = useState("");
 
   // color
   const { colors } = useTheme();
+
+  const onEditPress = (value) => {
+    console.log(value);
+    setModalVisible(false);
+    setInitialCategoryName(value);
+    setUpdatedCategoryName(value);
+    setEditCategoryNameModalVisible(true);
+  };
 
   const renderItem = ({ item, index, drag, isActive }) => (
     <Pressable onLongPress={drag} isActive={isActive} mt={4}>
@@ -716,7 +725,7 @@ const ModalWithCategorysToEdit = (props) => {
             {item}
           </Text>
           <Pressable
-            onPress={() => console.log(item)}
+            onPress={() => onEditPress(item)}
             position={"absolute"}
             right={4}
           >
@@ -847,10 +856,14 @@ const ModalWithCategorysToEdit = (props) => {
         setModalVisible={setAddCategoryModalVisible}
       />
 
-      {/* <ModalWithEditCategoryNameInEditCategoryModal
+      <ModalWithEditCategoryNameInEditCategoryModal
+        updatedCategoryName={updatedCategoryName}
+        setUpdatedCategoryName={setUpdatedCategoryName}
         modalVisible={editCategoryNameModalVisible}
         setModalVisible={setEditCategoryNameModalVisible}
-      /> */}
+        initialCategoryName={initialCategoryName}
+        setInitialCategoryName={setInitialCategoryName}
+      />
     </Box>
   );
 };
@@ -968,29 +981,47 @@ const ModalWithEditCategoryNameInEditCategoryModal = (props) => {
   // Dispatch
   const dispatch = useDispatch();
   // newCategory and modalVisible
-  const { newCategory, setNewCategory, modalVisible, setModalVisible } = props;
+  const {
+    updatedCategoryName,
+    setUpdatedCategoryName,
+    modalVisible,
+    setModalVisible,
+    initialCategoryName,
+    setInitialCategoryName,
+  } = props;
+
+  // Modal 標題顯示用
+  const [headerTitle, setHeaderTitle] = useState(
+    `修改「 ${initialCategoryName} 」類別名稱`
+  );
+  useEffect(() => {
+    setHeaderTitle(`修改「 ${initialCategoryName} 」類別名稱`);
+  }, [initialCategoryName]);
 
   // category pattern
   const oneNotBlank = /\S/;
   // check new category
-  const [isNewCategoryError, setIsNewCategoryError] = useState(false);
+  const [isUpdatedCategoryNameError, setIsUpdatedCategoryNameError] =
+    useState(false);
   useEffect(() => {
-    if (newCategory.length != 0) setIsNewCategoryError(false);
-  }, [newCategory]);
+    if (updatedCategoryName.length != 0) setIsUpdatedCategoryNameError(false);
+  }, [updatedCategoryName]);
 
   // 確認輸入的類別名稱
-  const checkNewCategoryValue = () => {
-    const alreadyHave = categorysValue.find((item) => item == newCategory);
+  const checkUpdatedCategoryNameValue = () => {
+    const alreadyHave = categorysValue.find(
+      (item) => item == updatedCategoryName
+    );
     // 還沒有該類別存在
     if (alreadyHave == undefined) {
-      dispatch(addCategory(newCategory));
-      setNewCategory("");
-      setIsNewCategoryError(false);
+      dispatch(addCategory(updatedCategoryName));
+      setUpdatedCategoryName("");
+      setIsUpdatedCategoryNameError(false);
       setModalVisible(false);
     }
     // 已有該類別
     else {
-      setIsNewCategoryError(true);
+      setIsUpdatedCategoryNameError(true);
       console.log("Already Have that category!");
     }
   };
@@ -1015,15 +1046,16 @@ const ModalWithEditCategoryNameInEditCategoryModal = (props) => {
             }}
             bgColor={colors.White}
           >
-            建立新類別
+            {/* 修改「{initialCategoryName}」類別名稱 */}
+            {headerTitle}
           </Modal.Header>
           <Modal.Body>
-            <FormControl isInvalid={isNewCategoryError}>
+            <FormControl isInvalid={isUpdatedCategoryNameError}>
               <Input
                 placeholder={"類別名稱"}
                 fontSize={"md"}
-                value={newCategory}
-                onChangeText={(text) => setNewCategory(text)}
+                value={updatedCategoryName}
+                onChangeText={(text) => setUpdatedCategoryName(text)}
                 color={colors.Black}
                 bgColor={colors.White}
               />
@@ -1040,8 +1072,8 @@ const ModalWithEditCategoryNameInEditCategoryModal = (props) => {
                 mr={5}
                 onPress={() => {
                   setModalVisible(false);
-                  setNewCategory("");
-                  setIsNewCategoryError(false);
+                  setUpdatedCategoryName("");
+                  setIsUpdatedCategoryNameError(false);
                 }}
               >
                 <Text fontSize={"md"} color={colors.Grey}>
@@ -1049,15 +1081,17 @@ const ModalWithEditCategoryNameInEditCategoryModal = (props) => {
                 </Text>
               </Pressable>
               <Pressable
-                isDisabled={!oneNotBlank.test(newCategory)}
+                isDisabled={!oneNotBlank.test(updatedCategoryName)}
                 onPress={() => {
-                  checkNewCategoryValue();
+                  checkUpdatedCategoryNameValue();
                 }}
               >
                 <Text
                   fontSize={"md"}
                   color={
-                    oneNotBlank.test(newCategory) ? colors.Black : colors.Grey
+                    oneNotBlank.test(updatedCategoryName)
+                      ? colors.Black
+                      : colors.Grey
                   }
                 >
                   確認
