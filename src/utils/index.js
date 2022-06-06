@@ -25,11 +25,20 @@ import DraggableFlatList, {
   NestableScrollContainer,
   ScaleDecorator,
 } from "react-native-draggable-flatlist";
+import {
+  GestureHandlerRootView,
+  TouchableOpacity,
+} from "react-native-gesture-handler";
 
 import { useDispatch, useSelector } from "react-redux";
-import { addCategory, selectCategorys } from "../redux/todoItemSlice";
+import {
+  addCategory,
+  selectCategorys,
+  sortCategorys,
+} from "../redux/todoItemSlice";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-// 取得今日日期 ----------------------------------------------------------------------------
+// 取得今日日期 ---------------------------------------------------------------------------- 取得今日日期
 const daysFull = ["週日", "週一", "週二", "週三", "週四", "週五", "週六"];
 
 const getCurrentTime = () => {
@@ -46,7 +55,7 @@ const getCurrentTime = () => {
   };
   return myTime;
 };
-// 選擇日期 ------------------------------------------------------------------------------
+// 選擇日期 ------------------------------------------------------------------------------ 選擇日期
 const days = ["日", "一", "二", "三", "四", "五", "六"];
 
 const InputWithDateTimePicker = (props) => {
@@ -157,7 +166,7 @@ const InputWithDateTimePicker = (props) => {
     </Box>
   );
 };
-// 標題輸入 ------------------------------------------------------------------------------
+// 標題輸入 ------------------------------------------------------------------------------ 標題輸入
 const InputWithTitle = (props) => {
   // title
   const { title, setTitle, isCheck, isTitleError } = props;
@@ -182,7 +191,7 @@ const InputWithTitle = (props) => {
     </Box>
   );
 };
-// 備註輸入 ------------------------------------------------------------------------------
+// 備註輸入 ------------------------------------------------------------------------------ 備註輸入
 const TextAreaWithNotes = (props) => {
   // notes
   const { notes, setNotes } = props;
@@ -206,7 +215,7 @@ const TextAreaWithNotes = (props) => {
     </Box>
   );
 };
-// 類別輸入 ------------------------------------------------------------------------------
+// 類別輸入 ------------------------------------------------------------------------------ 類別輸入
 const InputOptionWithCategory = (props) => {
   // category, newCategory, and check
   const {
@@ -283,7 +292,7 @@ const InputOptionWithCategory = (props) => {
     </Box>
   );
 };
-// 選擇類別 Modal ------------------------------------------------------------------------
+// 選擇類別 Modal ------------------------------------------------------------------------ 選擇類別 Modal
 const ModalWithCategory = (props) => {
   // State
   const categorysValue = useSelector(selectCategorys);
@@ -374,7 +383,7 @@ const ModalWithCategory = (props) => {
                     alignItems={"center"}
                   >
                     <MaterialIcons name="add" size={20} color={colors.Black} />
-                    <Text color={colors.primary700} fontSize={"md"} ml={5}>
+                    <Text color={colors.Black} fontSize={"md"} ml={5}>
                       建立新類別
                     </Text>
                   </HStack>
@@ -417,7 +426,7 @@ const ModalWithCategory = (props) => {
     </Box>
   );
 };
-// 新增類別 Modal ------------------------------------------------------------------------
+// 新增類別 Modal ------------------------------------------------------------------------ 新增類別 Modal
 const ModalWithNewCategory = (props) => {
   const categorysValue = useSelector(selectCategorys);
   // Dispatch
@@ -436,6 +445,10 @@ const ModalWithNewCategory = (props) => {
   const oneNotBlank = /\S/;
   // check new category
   const [isNewCategoryError, setIsNewCategoryError] = useState(false);
+  useEffect(() => {
+    if (newCategory.length != 0) setIsNewCategoryError(false);
+  }, [newCategory]);
+
   // 確認輸入的類別名稱
   const checkNewCategoryValue = () => {
     const alreadyHave = categorysValue.find((item) => item == newCategory);
@@ -529,7 +542,7 @@ const ModalWithNewCategory = (props) => {
     </Box>
   );
 };
-// 事項劃分 ------------------------------------------------------------------------------
+// 事項劃分 ------------------------------------------------------------------------------ 事項劃分
 const RadioWithDivide = (props) => {
   // divide
   const { divide, setDivide } = props;
@@ -594,7 +607,7 @@ const RadioWithDivide = (props) => {
     </Box>
   );
 };
-// 確認按鍵 ------------------------------------------------------------------------------
+// 確認按鍵 ------------------------------------------------------------------------------ 確認按鍵
 const ConfirmButton = (props) => {
   const { buttonText, onConfirmPress } = props;
   // color
@@ -624,7 +637,7 @@ const ConfirmButton = (props) => {
     </Pressable>
   );
 };
-// 取消按鍵 ------------------------------------------------------------------------------
+// 取消按鍵 ------------------------------------------------------------------------------ 取消按鍵
 const CancelButton = (props) => {
   const { buttonText, onCancelPress } = props;
   // color
@@ -654,31 +667,65 @@ const CancelButton = (props) => {
     </Pressable>
   );
 };
-// 類別排序 Modal ------------------------------------------------------------------------
+// 編輯類別 Modal ------------------------------------------------------------------------ 編輯類別 Modal (addCategory and editCategoryName)
 const ModalWithCategorysToEdit = (props) => {
   // State
   const categorysValue = useSelector(selectCategorys);
+  // Dispatch
+  const dispatch = useDispatch();
   // category, modalVisible and secondModalVisible
-  const { modalVisible, setModalVisible } = props;
+  const {
+    modalVisible,
+    setModalVisible,
+    currentCategorys,
+    setCurrentCategorys,
+  } = props;
 
-  // Edit Category Name Modal
+  // Add Category Modal and Edit Category Name Modal
+  const [addCategoryModalVisible, setAddCategoryModalVisible] = useState(false);
   const [editCategoryNameModalVisible, setEditCategoryNameModalVisible] =
     useState(false);
-  // Add Category Modal
-  const [addCategoryModalVisible, setAddCategoryModalVisible] = useState(false);
+
+  // add new category
+  const [newCategory, setNewCategory] = useState("");
+  // edit category name
+  const [updatedCategoryName, setUpdatedCategoryName] = useState("");
 
   // color
   const { colors } = useTheme();
 
   const renderItem = ({ item, index, drag, isActive }) => (
-    <ScaleDecorator>
-      <Pressable onLongPress={drag} bgColor={"red.100"} px={4} py={4} mt={2}>
-        <Text>{item}</Text>
-      </Pressable>
-    </ScaleDecorator>
+    <Pressable onLongPress={drag} isActive={isActive} mt={4}>
+      {({ isHovered, isFocused, isPressed }) => (
+        <HStack
+          color={colors.Black}
+          bgColor={
+            isPressed
+              ? colors.Background
+              : isHovered
+              ? colors.White
+              : colors.White
+          }
+          borderRadius={4}
+          px={2}
+          py={1}
+          alignItems={"center"}
+        >
+          <MaterialIcons name="menu" size={20} color={colors.Black} />
+          <Text color={colors.Black} fontSize={"md"} ml={5}>
+            {item}
+          </Text>
+          <Pressable
+            onPress={() => console.log(item)}
+            position={"absolute"}
+            right={4}
+          >
+            <MaterialIcons name="edit" size={20} color={colors.Black} />
+          </Pressable>
+        </HStack>
+      )}
+    </Pressable>
   );
-
-  const [testData, setTestData] = useState(["one", "two", "three", "four"]);
 
   return (
     <Box>
@@ -687,8 +734,15 @@ const ModalWithCategorysToEdit = (props) => {
         onClose={() => setModalVisible(false)}
         avoidKeyboard
         size="lg"
+        scrollEnabled={false}
+        enableAutomaticScroll={false}
       >
-        <Modal.Content bgColor={colors.White} borderRadius={4}>
+        <Modal.Content
+          bgColor={colors.White}
+          borderRadius={4}
+          scrollEnabled={false}
+          enableAutomaticScroll={false}
+        >
           <Modal.Header
             _text={{
               fontSize: "md",
@@ -700,54 +754,36 @@ const ModalWithCategorysToEdit = (props) => {
             編輯類別
           </Modal.Header>
           <Modal.Body
-          // p={0}
+            // p={0}
+            scrollEnabled={false}
+            enableAutomaticScroll={false}
+            nestedScrollEnabled={true}
           >
-            <NestableScrollContainer>
-              <NestableDraggableFlatList
-                data={testData}
-                renderItem={renderItem}
-                keyExtractor={(item, index) => item + index}
-                onDragEnd={({ data }) => setTestData(data)}
-              />
-            </NestableScrollContainer>
+            {categorysValue.length == 0 ? (
+              <Text fontSize={"md"} color={colors.Black}>
+                請先建立一個類別
+              </Text>
+            ) : (
+              <Box h={200}>
+                <GestureHandlerRootView>
+                  <NestableScrollContainer showsVerticalScrollIndicator={false}>
+                    <NestableDraggableFlatList
+                      data={currentCategorys}
+                      renderItem={renderItem}
+                      keyExtractor={(item, index) => item + index}
+                      onDragEnd={({ data }) => setCurrentCategorys(data)}
+                    />
+                  </NestableScrollContainer>
+                </GestureHandlerRootView>
+              </Box>
+            )}
 
-            {/* <FormControl mt={4} px={2} isRequired>
-                <Radio.Group
-                  colorScheme={"teal"}
-                  name="selecCategory"
-                  value={category}
-                  onChange={(nextValue) => {
-                    setCategory(nextValue);
-                  }}
-                >
-                  {categorysValue.length == 0 ? (
-                    <Text fontSize={"md"} color={colors.Black}>
-                      請先建立一個類別
-                    </Text>
-                  ) : (
-                    categorysValue.map((value, index) => (
-                      <Radio
-                        key={value + index}
-                        value={value}
-                        my={2}
-                        size={"sm"}
-                        _text={{
-                          color: colors.Black,
-                          fontSize: "md",
-                        }}
-                      >
-                        {" "}
-                        {value}
-                      </Radio>
-                    ))
-                  )}
-                </Radio.Group>
-              </FormControl> */}
             <Pressable
               onPress={() => {
                 setModalVisible(false);
-                setNextModalVisible(!nextModalVisible);
+                setAddCategoryModalVisible(true);
               }}
+              mt={4}
             >
               {({ isHovered, isFocused, isPressed }) => (
                 <HStack
@@ -762,11 +798,10 @@ const ModalWithCategorysToEdit = (props) => {
                   borderRadius={4}
                   px={2}
                   py={1}
-                  mt={4}
                   alignItems={"center"}
                 >
                   <MaterialIcons name="add" size={20} color={colors.Black} />
-                  <Text color={colors.primary700} fontSize={"md"} ml={5}>
+                  <Text color={colors.Black} fontSize={"md"} ml={5}>
                     建立新類別
                   </Text>
                 </HStack>
@@ -779,10 +814,8 @@ const ModalWithCategorysToEdit = (props) => {
               <Pressable
                 mr={5}
                 onPress={() => {
-                  // setModalVisible(false);
-                  // setCategory("");
-                  // setCategoryIsError(true);
-                  console.log(testData);
+                  setModalVisible(false);
+                  setCurrentCategorys(categorysValue);
                 }}
               >
                 <Text fontSize={"md"} color={colors.Grey}>
@@ -790,9 +823,9 @@ const ModalWithCategorysToEdit = (props) => {
                 </Text>
               </Pressable>
               <Pressable
-                // isDisabled={category == ""}
                 onPress={() => {
-                  // setModalVisible(false);
+                  setModalVisible(false);
+                  dispatch(sortCategorys(currentCategorys));
                 }}
               >
                 <Text
@@ -806,10 +839,237 @@ const ModalWithCategorysToEdit = (props) => {
           </Modal.Footer>
         </Modal.Content>
       </Modal>
+
+      <ModalWithNewCategoryInEditCategoryModal
+        newCategory={newCategory}
+        setNewCategory={setNewCategory}
+        modalVisible={addCategoryModalVisible}
+        setModalVisible={setAddCategoryModalVisible}
+      />
+
+      {/* <ModalWithEditCategoryNameInEditCategoryModal
+        modalVisible={editCategoryNameModalVisible}
+        setModalVisible={setEditCategoryNameModalVisible}
+      /> */}
     </Box>
   );
 };
+// 新增類別(編輯類別 Modal 使用) Modal --------------------------------------------------------- 新增類別(編輯類別 Modal 使用) Modal
+const ModalWithNewCategoryInEditCategoryModal = (props) => {
+  const categorysValue = useSelector(selectCategorys);
+  // Dispatch
+  const dispatch = useDispatch();
+  // newCategory and modalVisible
+  const { newCategory, setNewCategory, modalVisible, setModalVisible } = props;
 
+  // category pattern
+  const oneNotBlank = /\S/;
+  // check new category
+  const [isNewCategoryError, setIsNewCategoryError] = useState(false);
+  useEffect(() => {
+    if (newCategory.length != 0) setIsNewCategoryError(false);
+  }, [newCategory]);
+
+  // 確認輸入的類別名稱
+  const checkNewCategoryValue = () => {
+    const alreadyHave = categorysValue.find((item) => item == newCategory);
+    // 還沒有該類別存在
+    if (alreadyHave == undefined) {
+      dispatch(addCategory(newCategory));
+      setNewCategory("");
+      setIsNewCategoryError(false);
+      setModalVisible(false);
+    }
+    // 已有該類別
+    else {
+      setIsNewCategoryError(true);
+      console.log("Already Have that category!");
+    }
+  };
+  // color
+  const { colors } = useTheme();
+  return (
+    <Box>
+      <Modal
+        isOpen={modalVisible}
+        onClose={() => setModalVisible(false)}
+        avoidKeyboard
+        bottom="4"
+        size="lg"
+        closeOnOverlayClick={false}
+      >
+        <Modal.Content bgColor={colors.White} borderRadius={4}>
+          <Modal.Header
+            _text={{
+              fontSize: "md",
+              color: colors.Black,
+              fontWeight: "normal",
+            }}
+            bgColor={colors.White}
+          >
+            建立新類別
+          </Modal.Header>
+          <Modal.Body>
+            <FormControl isInvalid={isNewCategoryError}>
+              <Input
+                placeholder={"類別名稱"}
+                fontSize={"md"}
+                value={newCategory}
+                onChangeText={(text) => setNewCategory(text)}
+                color={colors.Black}
+                bgColor={colors.White}
+              />
+              <FormControl.ErrorMessage
+                leftIcon={<WarningOutlineIcon size="xs" />}
+              >
+                此類別已存在
+              </FormControl.ErrorMessage>
+            </FormControl>
+          </Modal.Body>
+          <Modal.Footer bgColor={colors.White}>
+            <HStack>
+              <Pressable
+                mr={5}
+                onPress={() => {
+                  setModalVisible(false);
+                  setNewCategory("");
+                  setIsNewCategoryError(false);
+                }}
+              >
+                <Text fontSize={"md"} color={colors.Grey}>
+                  取消
+                </Text>
+              </Pressable>
+              <Pressable
+                isDisabled={!oneNotBlank.test(newCategory)}
+                onPress={() => {
+                  checkNewCategoryValue();
+                }}
+              >
+                <Text
+                  fontSize={"md"}
+                  color={
+                    oneNotBlank.test(newCategory) ? colors.Black : colors.Grey
+                  }
+                >
+                  確認
+                </Text>
+              </Pressable>
+            </HStack>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
+    </Box>
+  );
+};
+// 編輯 Category 名稱(編輯類別 Modal 使用) Modal------------------------------------------------ 編輯 Category 名稱(編輯類別 Modal 使用) Modal
+const ModalWithEditCategoryNameInEditCategoryModal = (props) => {
+  const categorysValue = useSelector(selectCategorys);
+  // Dispatch
+  const dispatch = useDispatch();
+  // newCategory and modalVisible
+  const { newCategory, setNewCategory, modalVisible, setModalVisible } = props;
+
+  // category pattern
+  const oneNotBlank = /\S/;
+  // check new category
+  const [isNewCategoryError, setIsNewCategoryError] = useState(false);
+  useEffect(() => {
+    if (newCategory.length != 0) setIsNewCategoryError(false);
+  }, [newCategory]);
+
+  // 確認輸入的類別名稱
+  const checkNewCategoryValue = () => {
+    const alreadyHave = categorysValue.find((item) => item == newCategory);
+    // 還沒有該類別存在
+    if (alreadyHave == undefined) {
+      dispatch(addCategory(newCategory));
+      setNewCategory("");
+      setIsNewCategoryError(false);
+      setModalVisible(false);
+    }
+    // 已有該類別
+    else {
+      setIsNewCategoryError(true);
+      console.log("Already Have that category!");
+    }
+  };
+  // color
+  const { colors } = useTheme();
+  return (
+    <Box>
+      <Modal
+        isOpen={modalVisible}
+        onClose={() => setModalVisible(false)}
+        avoidKeyboard
+        bottom="4"
+        size="lg"
+        closeOnOverlayClick={false}
+      >
+        <Modal.Content bgColor={colors.White} borderRadius={4}>
+          <Modal.Header
+            _text={{
+              fontSize: "md",
+              color: colors.Black,
+              fontWeight: "normal",
+            }}
+            bgColor={colors.White}
+          >
+            建立新類別
+          </Modal.Header>
+          <Modal.Body>
+            <FormControl isInvalid={isNewCategoryError}>
+              <Input
+                placeholder={"類別名稱"}
+                fontSize={"md"}
+                value={newCategory}
+                onChangeText={(text) => setNewCategory(text)}
+                color={colors.Black}
+                bgColor={colors.White}
+              />
+              <FormControl.ErrorMessage
+                leftIcon={<WarningOutlineIcon size="xs" />}
+              >
+                此類別已存在
+              </FormControl.ErrorMessage>
+            </FormControl>
+          </Modal.Body>
+          <Modal.Footer bgColor={colors.White}>
+            <HStack>
+              <Pressable
+                mr={5}
+                onPress={() => {
+                  setModalVisible(false);
+                  setNewCategory("");
+                  setIsNewCategoryError(false);
+                }}
+              >
+                <Text fontSize={"md"} color={colors.Grey}>
+                  取消
+                </Text>
+              </Pressable>
+              <Pressable
+                isDisabled={!oneNotBlank.test(newCategory)}
+                onPress={() => {
+                  checkNewCategoryValue();
+                }}
+              >
+                <Text
+                  fontSize={"md"}
+                  color={
+                    oneNotBlank.test(newCategory) ? colors.Black : colors.Grey
+                  }
+                >
+                  確認
+                </Text>
+              </Pressable>
+            </HStack>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
+    </Box>
+  );
+};
 // ===================================================================================
 // Functions
 export { getCurrentTime };

@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { Box, Text, FlatList, HStack, Center, Pressable } from "native-base";
 import { useTheme } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import MyCalendar from "../components/MyCalendar";
 
@@ -21,15 +22,13 @@ const CalendarScreen = ({ navigation }) => {
 
   const renderDragItem = ({ item, index, drag, isActive }) => {
     return (
-      <ScaleDecorator>
-        <TouchableOpacity
-          onPressIn={drag}
-          disabled={isActive}
-          style={{ backgroundColor: "lightyellow", width: 160 }}
-        >
-          <Text fontSize={48}>{item.label}</Text>
-        </TouchableOpacity>
-      </ScaleDecorator>
+      <TouchableOpacity
+        onPressIn={drag}
+        disabled={isActive}
+        style={{ backgroundColor: "lightyellow", width: 160 }}
+      >
+        <Text fontSize={48}>{item.label}</Text>
+      </TouchableOpacity>
     );
   };
 
@@ -37,18 +36,25 @@ const CalendarScreen = ({ navigation }) => {
     <Box
       flex={1}
       bgColor={colors.Background}
-      px={4}
+      px={8}
       py={4}
       // px={10}
     >
+      <GestureHandlerRootView>
+        <DraggableFlatList
+          data={data}
+          onDragEnd={({ data }) => setData(data)}
+          keyExtractor={(item) => item.key}
+          renderItem={renderDragItem}
+        />
+      </GestureHandlerRootView>
       {/* <MyCalendar />
       <Text>I am calendar screen</Text> */}
-
-      <DraggableFlatList
-        data={data}
-        onDragEnd={({ data }) => setData(data)}
-        keyExtractor={(item) => item.key}
-        renderItem={renderDragItem}
+      <Pressable
+        w={40}
+        h={40}
+        bgColor={"amber.400"}
+        onPress={() => console.log(data)}
       />
     </Box>
   );

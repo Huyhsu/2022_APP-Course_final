@@ -51,6 +51,9 @@ const todoItemSlice = createSlice({
       currentTodoItems[updatedTodoItemIndex] = updatedTodoItem;
       state.todoItems = [...currentTodoItems];
     },
+    sortCategorys: (state, action) => {
+      state.categorys = [...action.payload];
+    },
   },
 });
 
@@ -65,6 +68,7 @@ export const {
   addCategory,
   setCurrentEditTodoItem,
   editTodoItem,
+  sortCategorys,
 } = todoItemSlice.actions;
 // Reducer
 export default todoItemSlice.reducer;

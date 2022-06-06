@@ -6,10 +6,22 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import { ModalWithCategorysToEdit } from "../utils";
 
+import { useSelector } from "react-redux";
+import { selectCategorys } from "../redux/todoItemSlice";
+
 const SearchBarHeader = (props) => {
-  // Edit Category Modal
+  // State
+  const categorysValue = useSelector(selectCategorys);
+  // Edit Category Modal Visible
   const [editCategoryModalVisible, setEditCategoryModalVisible] =
     useState(false);
+
+  // sort categorys
+  const [currentCategorys, setCurrentCategorys] = useState([...categorysValue]);
+  // 更新待排列的暫存類別
+  useEffect(() => {
+    setCurrentCategorys(categorysValue);
+  }, [categorysValue]);
 
   // Delete Category Modal
   const [deleteCategoryModalVisible, setDeleteCategoryModalVisible] =
@@ -20,6 +32,7 @@ const SearchBarHeader = (props) => {
 
   const onEditCategoryPress = () => {
     console.log("Select Edit Category");
+    setCurrentCategorys(categorysValue);
     setEditCategoryModalVisible(true);
   };
 
@@ -87,6 +100,8 @@ const SearchBarHeader = (props) => {
         <ModalWithCategorysToEdit
           modalVisible={editCategoryModalVisible}
           setModalVisible={setEditCategoryModalVisible}
+          currentCategorys={currentCategorys}
+          setCurrentCategorys={setCurrentCategorys}
         />
       </Box>
     </SafeAreaView>
