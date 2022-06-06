@@ -1,6 +1,8 @@
 import { Box, Text, FlatList, HStack, Image } from "native-base";
 import { useTheme } from "@react-navigation/native";
 
+import MyCalendar from "../components/MyCalendar";
+
 const CalendarScreen = ({ navigation }) => {
   const { colors } = useTheme();
   return (
@@ -10,7 +12,8 @@ const CalendarScreen = ({ navigation }) => {
       px={4}
       // px={10}
     >
-      <Text> I am clendar screen </Text>
+      <MyCalendar />
+      <Text>I am calendar screen</Text>
     </Box>
   );
 };

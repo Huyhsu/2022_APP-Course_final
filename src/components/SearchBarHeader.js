@@ -1,6 +1,6 @@
 import { useTheme } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Box, Center, Input, Pressable } from "native-base";
+import { Box, Center, Input, Pressable, Menu } from "native-base";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 const SearchBarHeader = (props) => {
@@ -27,7 +27,7 @@ const SearchBarHeader = (props) => {
               />
             }
           />
-          <Pressable
+          {/* <Pressable
             position={"absolute"}
             right={2}
             onPress={() => console.log("more")}
@@ -36,8 +36,34 @@ const SearchBarHeader = (props) => {
               name="more-vert"
               size={24}
               color={colors.Primary900}
-            />
-          </Pressable>
+            ></MaterialIcons>
+          </Pressable> */}
+          <Menu
+            mr={4}
+            trigger={(triggerProps) => {
+              return (
+                <Pressable
+                  position={"absolute"}
+                  right={2}
+                  accessibilityLabel="More options menu"
+                  {...triggerProps}
+                >
+                  <MaterialIcons
+                    name="more-vert"
+                    size={24}
+                    color={colors.Primary900}
+                  />
+                </Pressable>
+              );
+            }}
+          >
+            <Menu.Item onPress={() => console.log("Select Edit Category")}>
+              編輯類別
+            </Menu.Item>
+            <Menu.Item onPress={() => console.log("Select remove Category")}>
+              移除類別
+            </Menu.Item>
+          </Menu>
         </Center>
       </Box>
     </SafeAreaView>

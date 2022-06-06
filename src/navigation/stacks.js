@@ -155,7 +155,7 @@ const NoteEditStack = ({ navigation }) => {
       <Stack.Screen
         name="NoteEdit"
         component={NoteEditScreen}
-        options={{ title: "確認" }}
+        options={{ title: "編輯" }}
       />
     </Stack.Navigator>
   );
