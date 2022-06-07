@@ -24,7 +24,12 @@ const HomeTopTabs = ({ navigation }) => {
   const { colors } = useTheme();
   return (
     <>
-      <Pressable onPress={() => console.log(categorysValue.length)}>
+      <Pressable
+        onPress={() => {
+          console.log("todoItems:" + todoItemsValue[0].category);
+          console.log("categorys:" + categorysValue);
+        }}
+      >
         <WeekInfoCard />
       </Pressable>
       <Tab.Navigator

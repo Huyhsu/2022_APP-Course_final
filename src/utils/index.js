@@ -33,6 +33,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import {
   addCategory,
+  editCategoryNameAndTodoItemsCategory,
   selectCategorys,
   sortCategorys,
 } from "../redux/todoItemSlice";
@@ -696,7 +697,7 @@ const ModalWithCategorysToEdit = (props) => {
   const { colors } = useTheme();
 
   const onEditPress = (value) => {
-    console.log(value);
+    // console.log(value);
     setModalVisible(false);
     setInitialCategoryName(value);
     setUpdatedCategoryName(value);
@@ -980,7 +981,7 @@ const ModalWithEditCategoryNameInEditCategoryModal = (props) => {
   const categorysValue = useSelector(selectCategorys);
   // Dispatch
   const dispatch = useDispatch();
-  // newCategory and modalVisible
+  // updatedCategoryName, initialCategoryName and modalVisible
   const {
     updatedCategoryName,
     setUpdatedCategoryName,
@@ -995,7 +996,9 @@ const ModalWithEditCategoryNameInEditCategoryModal = (props) => {
     `修改「 ${initialCategoryName} 」類別名稱`
   );
   useEffect(() => {
-    setHeaderTitle(`修改「 ${initialCategoryName} 」類別名稱`);
+    if (modalVisible) {
+      setHeaderTitle(`修改「 ${initialCategoryName} 」類別名稱`);
+    }
   }, [initialCategoryName]);
 
   // category pattern
@@ -1004,17 +1007,27 @@ const ModalWithEditCategoryNameInEditCategoryModal = (props) => {
   const [isUpdatedCategoryNameError, setIsUpdatedCategoryNameError] =
     useState(false);
   useEffect(() => {
-    if (updatedCategoryName.length != 0) setIsUpdatedCategoryNameError(false);
+    if (updatedCategoryName.length != 0 && modalVisible)
+      setIsUpdatedCategoryNameError(false);
   }, [updatedCategoryName]);
 
   // 確認輸入的類別名稱
   const checkUpdatedCategoryNameValue = () => {
-    const alreadyHave = categorysValue.find(
-      (item) => item == updatedCategoryName
+    const initialCategoryNameIndex = categorysValue.findIndex(
+      (value) => value == initialCategoryName
     );
-    // 還沒有該類別存在
+    const alreadyHave = categorysValue.find(
+      (value) => value == updatedCategoryName && value != initialCategoryName
+    );
+    // 還沒有該類別存在(或等於原名稱)
     if (alreadyHave == undefined) {
-      dispatch(addCategory(updatedCategoryName));
+      dispatch(
+        editCategoryNameAndTodoItemsCategory({
+          initialCategoryName,
+          initialCategoryNameIndex,
+          updatedCategoryName,
+        })
+      );
       setUpdatedCategoryName("");
       setIsUpdatedCategoryNameError(false);
       setModalVisible(false);
@@ -1071,9 +1084,9 @@ const ModalWithEditCategoryNameInEditCategoryModal = (props) => {
               <Pressable
                 mr={5}
                 onPress={() => {
-                  setModalVisible(false);
                   setUpdatedCategoryName("");
                   setIsUpdatedCategoryNameError(false);
+                  setModalVisible(false);
                 }}
               >
                 <Text fontSize={"md"} color={colors.Grey}>

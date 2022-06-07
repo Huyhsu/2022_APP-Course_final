@@ -54,6 +54,29 @@ const todoItemSlice = createSlice({
     sortCategorys: (state, action) => {
       state.categorys = [...action.payload];
     },
+    editCategoryNameAndTodoItemsCategory: (state, action) => {
+      const initialCategoryName = action.payload.initialCategoryName;
+      const initialCategoryNameIndex = action.payload.initialCategoryNameIndex;
+
+      const updatedCategoryName = action.payload.updatedCategoryName;
+
+      const currentCategorys = [...state.categorys];
+      const currentTodoItems = [...state.todoItems];
+      currentCategorys[initialCategoryNameIndex] = updatedCategoryName;
+      const updatedCategorys = [...currentCategorys];
+      const updatedTodoItems = currentTodoItems.map((value) => {
+        if (value.category == initialCategoryName) {
+          value.category = updatedCategoryName;
+          return value;
+        } else {
+          return value;
+        }
+      });
+      state.categorys = [...updatedCategorys];
+      state.todoItems = [...updatedTodoItems];
+      console.log(state.categorys);
+      console.log(state.todoItems);
+    },
   },
 });
 
@@ -69,6 +92,7 @@ export const {
   setCurrentEditTodoItem,
   editTodoItem,
   sortCategorys,
+  editCategoryNameAndTodoItemsCategory,
 } = todoItemSlice.actions;
 // Reducer
 export default todoItemSlice.reducer;
