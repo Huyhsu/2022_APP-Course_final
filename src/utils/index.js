@@ -18,26 +18,27 @@ import {
   useColorMode,
   Divider,
   HStack,
+  Checkbox,
 } from "native-base";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import DraggableFlatList, {
   NestableDraggableFlatList,
   NestableScrollContainer,
-  ScaleDecorator,
 } from "react-native-draggable-flatlist";
-import {
-  GestureHandlerRootView,
-  TouchableOpacity,
-} from "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
   addCategory,
   editCategoryNameAndTodoItemsCategory,
+  removeCategorysAndEditTodoItems,
   selectCategorys,
   sortCategorys,
 } from "../redux/todoItemSlice";
-import { SafeAreaView } from "react-native-safe-area-context";
+
+import { LogBox } from "react-native";
+LogBox.ignoreLogs(["Warning: ..."]); // Ignore log notification by message
+LogBox.ignoreAllLogs(); //Ignore all log notifications
 
 // 取得今日日期 ---------------------------------------------------------------------------- 取得今日日期
 const daysFull = ["週日", "週一", "週二", "週三", "週四", "週五", "週六"];
@@ -56,6 +57,9 @@ const getCurrentTime = () => {
   };
   return myTime;
 };
+
+//#region w/ Form Inputs
+
 // 選擇日期 ------------------------------------------------------------------------------ 選擇日期
 const days = ["日", "一", "二", "三", "四", "五", "六"];
 
@@ -322,6 +326,7 @@ const ModalWithCategory = (props) => {
               fontSize: "md",
               color: colors.Black,
               fontWeight: "normal",
+              paddingLeft: 2,
             }}
             bgColor={colors.White}
           >
@@ -332,7 +337,7 @@ const ModalWithCategory = (props) => {
               <FormControl mt={4} px={2} isRequired>
                 <Radio.Group
                   colorScheme={"teal"}
-                  name="selecCategory"
+                  name="selectCategoryToAddTodoItem"
                   value={category}
                   onChange={(nextValue) => {
                     setCategory(nextValue);
@@ -447,7 +452,7 @@ const ModalWithNewCategory = (props) => {
   // check new category
   const [isNewCategoryError, setIsNewCategoryError] = useState(false);
   useEffect(() => {
-    if (newCategory.length != 0) setIsNewCategoryError(false);
+    if (newCategory.length != 0 && modalVisible) setIsNewCategoryError(false);
   }, [newCategory]);
 
   // 確認輸入的類別名稱
@@ -484,6 +489,7 @@ const ModalWithNewCategory = (props) => {
               fontSize: "md",
               color: colors.Black,
               fontWeight: "normal",
+              paddingLeft: 0,
             }}
             bgColor={colors.White}
           >
@@ -608,6 +614,11 @@ const RadioWithDivide = (props) => {
     </Box>
   );
 };
+
+//#endregion
+
+//#region w/ Buttons
+
 // 確認按鍵 ------------------------------------------------------------------------------ 確認按鍵
 const ConfirmButton = (props) => {
   const { buttonText, onConfirmPress } = props;
@@ -668,8 +679,13 @@ const CancelButton = (props) => {
     </Pressable>
   );
 };
+
+//#endregion
+
+//#region w/ Edit Category Modal
+
 // 編輯類別 Modal ------------------------------------------------------------------------ 編輯類別 Modal (addCategory and editCategoryName)
-const ModalWithCategorysToEdit = (props) => {
+const ModalWithEditCategorys = (props) => {
   // State
   const categorysValue = useSelector(selectCategorys);
   // Dispatch
@@ -758,6 +774,7 @@ const ModalWithCategorysToEdit = (props) => {
               fontSize: "md",
               color: colors.Black,
               fontWeight: "normal",
+              paddingLeft: 2,
             }}
             bgColor={colors.White}
           >
@@ -918,6 +935,7 @@ const ModalWithNewCategoryInEditCategoryModal = (props) => {
               fontSize: "md",
               color: colors.Black,
               fontWeight: "normal",
+              paddingLeft: 0,
             }}
             bgColor={colors.White}
           >
@@ -1003,24 +1021,27 @@ const ModalWithEditCategoryNameInEditCategoryModal = (props) => {
 
   // category pattern
   const oneNotBlank = /\S/;
+
   // check new category
   const [isUpdatedCategoryNameError, setIsUpdatedCategoryNameError] =
     useState(false);
-  useEffect(() => {
-    if (updatedCategoryName.length != 0 && modalVisible)
-      setIsUpdatedCategoryNameError(false);
-  }, [updatedCategoryName]);
+
+  // Todo: 待確認錯誤原因
+  // useEffect(() => {
+  //   if (updatedCategoryName.length != 0 && modalVisible)
+  //     setIsUpdatedCategoryNameError(false);
+  // }, [updatedCategoryName]);
 
   // 確認輸入的類別名稱
   const checkUpdatedCategoryNameValue = () => {
-    const initialCategoryNameIndex = categorysValue.findIndex(
-      (value) => value == initialCategoryName
-    );
     const alreadyHave = categorysValue.find(
       (value) => value == updatedCategoryName && value != initialCategoryName
     );
     // 還沒有該類別存在(或等於原名稱)
     if (alreadyHave == undefined) {
+      const initialCategoryNameIndex = categorysValue.findIndex(
+        (value) => value == initialCategoryName
+      );
       dispatch(
         editCategoryNameAndTodoItemsCategory({
           initialCategoryName,
@@ -1028,9 +1049,9 @@ const ModalWithEditCategoryNameInEditCategoryModal = (props) => {
           updatedCategoryName,
         })
       );
+      setModalVisible(false);
       setUpdatedCategoryName("");
       setIsUpdatedCategoryNameError(false);
-      setModalVisible(false);
     }
     // 已有該類別
     else {
@@ -1056,6 +1077,7 @@ const ModalWithEditCategoryNameInEditCategoryModal = (props) => {
               fontSize: "md",
               color: colors.Black,
               fontWeight: "normal",
+              paddingLeft: 0,
             }}
             bgColor={colors.White}
           >
@@ -1117,7 +1139,236 @@ const ModalWithEditCategoryNameInEditCategoryModal = (props) => {
     </Box>
   );
 };
-// ===================================================================================
+
+//#endregion
+
+//#region w/ Remove Category Modal
+
+// 移除類別 Modal ------------------------------------------------------------------------ 移除類別 Modal
+const ModalWithRemoveCategorys = (props) => {
+  // State
+  const categorysValue = useSelector(selectCategorys);
+  // Dispatch
+  const dispatch = useDispatch();
+  // selectedCategorys, modalVisible
+  const {
+    modalVisible,
+    setModalVisible,
+    selectedCategorys,
+    setSelectedCategorys,
+  } = props;
+
+  // Remove Category Double Check Modal
+  const [removeCategoryCheckModalVisible, setRemoveCategoryCheckModalVisible] =
+    useState(false);
+
+  // color
+  const { colors } = useTheme();
+  return (
+    <Box>
+      <Modal
+        isOpen={modalVisible}
+        onClose={() => setModalVisible(false)}
+        avoidKeyboard
+        size="lg"
+        scrollEnabled={false}
+        enableAutomaticScroll={false}
+      >
+        <Modal.Content
+          bgColor={colors.White}
+          borderRadius={4}
+          scrollEnabled={false}
+          enableAutomaticScroll={false}
+        >
+          <Modal.Header
+            _text={{
+              fontSize: "md",
+              color: colors.Black,
+              fontWeight: "normal",
+              paddingLeft: 2,
+            }}
+            bgColor={colors.White}
+          >
+            移除類別
+          </Modal.Header>
+          <Modal.Body
+            // p={0}
+            scrollEnabled={false}
+            enableAutomaticScroll={false}
+            nestedScrollEnabled={true}
+          >
+            <FormControl mt={4} px={2} isRequired>
+              <Checkbox.Group
+                colorScheme={"teal"}
+                name="selectCategorysToRemove"
+                value={selectedCategorys}
+                onChange={(nextValue) => setSelectedCategorys(nextValue)}
+              >
+                {categorysValue.length == 0 ? (
+                  <Text fontSize={"md"} color={colors.Black}>
+                    目前無任何類別
+                  </Text>
+                ) : (
+                  categorysValue.map((value, index) => (
+                    <Checkbox
+                      key={value + index}
+                      value={value}
+                      my={2}
+                      size={"sm"}
+                      _text={{
+                        color: colors.Black,
+                        fontSize: "md",
+                      }}
+                    >
+                      {value}
+                    </Checkbox>
+                  ))
+                )}
+              </Checkbox.Group>
+            </FormControl>
+          </Modal.Body>
+
+          <Modal.Footer bgColor={colors.White}>
+            <HStack>
+              <Pressable
+                mr={5}
+                onPress={() => {
+                  setModalVisible(false);
+                  setSelectedCategorys([]);
+                }}
+              >
+                <Text fontSize={"md"} color={colors.Grey}>
+                  取消
+                </Text>
+              </Pressable>
+              <Pressable
+                isDisabled={selectedCategorys.length == 0}
+                onPress={() => {
+                  setModalVisible(false);
+                  setRemoveCategoryCheckModalVisible(true);
+                }}
+              >
+                <Text
+                  fontSize={"md"}
+                  color={
+                    selectedCategorys.length == 0 ? colors.Grey : colors.Black
+                  }
+                >
+                  確認
+                </Text>
+              </Pressable>
+            </HStack>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
+
+      <ModalWithRemoveCategorysCheckInRemoveCategorysModal
+        modalVisible={removeCategoryCheckModalVisible}
+        setModalVisible={setRemoveCategoryCheckModalVisible}
+        selectedCategorys={selectedCategorys}
+        setSelectedCategorys={setSelectedCategorys}
+      />
+    </Box>
+  );
+};
+const ModalWithRemoveCategorysCheckInRemoveCategorysModal = (props) => {
+  // State
+  const categorysValue = useSelector(selectCategorys);
+  // Dispatch
+  const dispatch = useDispatch();
+  // modalVisible and secondModalVisible
+  const {
+    modalVisible,
+    setModalVisible,
+    selectedCategorys,
+    setSelectedCategorys,
+  } = props;
+
+  const [removeCheckContent, setRemoveCheckContent] = useState(
+    `確定移除所選的${selectedCategorys.length}項類別嗎?`
+  );
+  useEffect(() => {
+    setRemoveCheckContent(
+      `確定移除所選的 ${selectedCategorys.length} 項類別嗎?`
+    );
+  }, [selectedCategorys]);
+
+  // color
+  const { colors } = useTheme();
+  return (
+    <Box>
+      <Modal
+        isOpen={modalVisible}
+        onClose={() => setModalVisible(false)}
+        avoidKeyboard
+        size="lg"
+        scrollEnabled={false}
+        enableAutomaticScroll={false}
+      >
+        <Modal.Content
+          bgColor={colors.White}
+          borderRadius={4}
+          scrollEnabled={false}
+          enableAutomaticScroll={false}
+        >
+          {/* <Modal.Header
+            _text={{
+              fontSize: "md",
+              color: colors.Black,
+              fontWeight: "normal",
+              paddingLeft: 2,
+            }}
+            bgColor={colors.White}
+          >
+            移除類別
+          </Modal.Header> */}
+          <Modal.Body
+            // p={0}
+            scrollEnabled={false}
+            enableAutomaticScroll={false}
+            nestedScrollEnabled={true}
+          >
+            <Text color={colors.Black} fontSize={"md"}>
+              {removeCheckContent}
+            </Text>
+            <Text color={colors.Black} fontSize={"md"}>
+              該類別的待辦事項也會一併刪除!
+            </Text>
+          </Modal.Body>
+
+          <Modal.Footer bgColor={colors.White}>
+            <HStack>
+              <Pressable
+                mr={5}
+                onPress={() => {
+                  setModalVisible(false);
+                }}
+              >
+                <Text fontSize={"md"} color={colors.Grey}>
+                  取消
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  setModalVisible(false);
+                  dispatch(removeCategorysAndEditTodoItems(selectedCategorys));
+                }}
+              >
+                <Text fontSize={"md"} color={colors.Black}>
+                  確認
+                </Text>
+              </Pressable>
+            </HStack>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
+    </Box>
+  );
+};
+
+//#endregion
+
+// =================================================================================== Export
 // Functions
 export { getCurrentTime };
 // Form Input Utils
@@ -1128,7 +1379,7 @@ export {
   InputOptionWithCategory,
   RadioWithDivide,
 };
-// Modal
-export { ModalWithCategorysToEdit };
-// Button
+// Modals
+export { ModalWithEditCategorys, ModalWithRemoveCategorys };
+// Buttons
 export { ConfirmButton, CancelButton };

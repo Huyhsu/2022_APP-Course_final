@@ -77,6 +77,53 @@ const todoItemSlice = createSlice({
       console.log(state.categorys);
       console.log(state.todoItems);
     },
+    removeCategorysAndEditTodoItems: (state, action) => {
+      const selectedCategorys = [...action.payload];
+      const currentTodoItems = [...state.todoItems];
+      const currentCategorys = [...state.categorys];
+      // const updatedCategorys = currentCategorys
+      //   .map((value) => {
+      //     let notRemove = true;
+      //     for (let i = 0; i < selectedCategorys.length; i++) {
+      //       if (value == selectedCategorys[i]) {
+      //         notRemove = false;
+      //       }
+      //     }
+      //     if (notRemove) {
+      //       return value;
+      //     }
+      //   })
+      //   .filter((value) => value != undefined);
+      const updatedCategorys = currentCategorys.filter((value) => {
+        let shouldRetain = true;
+        for (let i = 0; i < selectedCategorys.length; i++) {
+          if (value == selectedCategorys[i]) {
+            shouldRetain = false;
+          }
+        }
+        if (shouldRetain) {
+          return value;
+        }
+      });
+      // const updatedTodoItems = currentTodoItems
+      //   .map((value) => {
+      //     for (let i = 0; i < updatedCategorys.length; i++) {
+      //       if (value.category == updatedCategorys[i]) {
+      //         return value;
+      //       }
+      //     }
+      //   })
+      //   .filter((value) => value != undefined);
+      const updatedTodoItems = currentTodoItems.filter((value) => {
+        for (let i = 0; i < updatedCategorys.length; i++) {
+          if (value.category == updatedCategorys[i]) {
+            return value;
+          }
+        }
+      });
+      state.categorys = [...updatedCategorys];
+      state.todoItems = [...updatedTodoItems];
+    },
   },
 });
 
@@ -93,6 +140,7 @@ export const {
   editTodoItem,
   sortCategorys,
   editCategoryNameAndTodoItemsCategory,
+  removeCategorysAndEditTodoItems,
 } = todoItemSlice.actions;
 // Reducer
 export default todoItemSlice.reducer;

@@ -26,8 +26,7 @@ const HomeTopTabs = ({ navigation }) => {
     <>
       <Pressable
         onPress={() => {
-          console.log("todoItems:" + todoItemsValue[0].category);
-          console.log("categorys:" + categorysValue);
+          console.log("today");
         }}
       >
         <WeekInfoCard />
