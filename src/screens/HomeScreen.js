@@ -10,6 +10,12 @@ const HomeScreen = ({ navigation, currentTodoItems }) => {
   );
 
   const { colors } = useTheme();
+
+  let sortedTodoItems = [...currentTodoItems];
+  sortedTodoItems.sort((first, second) => {
+    return first.compareTime - second.compareTime;
+  });
+
   return (
     <Box
       flex={1}
@@ -23,7 +29,7 @@ const HomeScreen = ({ navigation, currentTodoItems }) => {
         </Text>
       ) : (
         <FlatList
-          data={currentTodoItems}
+          data={sortedTodoItems}
           renderItem={renderItem}
           showsVerticalScrollIndicator={false}
           keyExtractor={(item, index) => item.title + item.category + index}

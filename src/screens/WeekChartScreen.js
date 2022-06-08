@@ -3,8 +3,8 @@ import { Box, Text, FlatList, HStack, Center, Pressable } from "native-base";
 import { useTheme } from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-import { useDispatch, useSelector } from "react-redux";
-import { selectTodoItems, setWeekTodoItemsCount } from "../redux/todoItemSlice";
+import { useSelector } from "react-redux";
+import { selectTodoItems } from "../redux/todoItemSlice";
 
 import { getThisWeekData } from "../utils";
 import MyBottomSheet from "../components/MyBottomSheet";
@@ -19,8 +19,6 @@ import {
 const WeekChartScreen = ({ navigation }) => {
   // States
   const todoItemsValue = useSelector(selectTodoItems);
-  // Dispatch
-  const dispatch = useDispatch();
   // color
   const { colors } = useTheme();
 
@@ -103,12 +101,17 @@ const WeekChartScreen = ({ navigation }) => {
     { x: "六", y: seventhDayItemsCount },
   ];
 
+  let sortedTodoItems = [...thisWeekTodoItems];
+  sortedTodoItems.sort((first, second) => {
+    return first.compareTime - second.compareTime;
+  });
+
   return (
     <GestureHandlerRootView
       flex={1}
       style={{ backgroundColor: colors.Background }}
     >
-      <Box flex={1} bgColor={colors.Background}>
+      <Box flex={1} bgColor={colors.White}>
         <Center pt={10}>
           <Text fontSize={"sm"}>
             {thisWeekTime.weekStartTime.monthAndDate} -{" "}
@@ -135,7 +138,7 @@ const WeekChartScreen = ({ navigation }) => {
           />
         </VictoryChart>
         <MyBottomSheet
-          itemsData={thisWeekTodoItems}
+          itemsData={sortedTodoItems}
           navigation={navigation}
           emptyText={"本週無待辦事項"}
         />

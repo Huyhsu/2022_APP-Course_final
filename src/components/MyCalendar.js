@@ -5,7 +5,6 @@ import { Calendar, LocaleConfig } from "react-native-calendars";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
-  selectSelectedTodoItemsInCalendar,
   selectTodoItems,
   setCalendarSelectedTodoItems,
 } from "../redux/todoItemSlice";
@@ -49,9 +48,6 @@ LocaleConfig.defaultLocale = "fr";
 const MyCalendar = () => {
   // State
   const todoItemsValue = useSelector(selectTodoItems);
-  const selectedTodoItemsInCalendarValue = useSelector(
-    selectSelectedTodoItemsInCalendar
-  );
   // Dispatch
   const dispatch = useDispatch();
 
@@ -60,7 +56,7 @@ const MyCalendar = () => {
   const [{ key, theme }, setTheme] = useState({
     key: "light",
     theme: {
-      calendarBackground: colors.Background,
+      calendarBackground: colors.White,
       dayTextColor: colors.Black,
       monthTextColor: colors.Black,
       arrowColor: colors.Primary900,

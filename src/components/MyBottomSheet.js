@@ -33,7 +33,7 @@ const MyBottomSheet = (props) => {
       snapPoints={snapPoints}
       // onChange={handleSheetChange}
       handleStyle={{
-        backgroundColor: colors.Primary100,
+        backgroundColor: colors.Background,
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
       }}
@@ -44,7 +44,7 @@ const MyBottomSheet = (props) => {
       // contentContainerStyle={{ backgroundColor: colors.White }}
     >
       {itemsData.length == 0 ? (
-        <Box bgColor={colors.Primary100} h={"100%"}>
+        <Box bgColor={colors.Background} h={"100%"}>
           <Text
             color={colors.Black}
             fontSize={"md"}
@@ -60,7 +60,7 @@ const MyBottomSheet = (props) => {
           keyExtractor={(item, index) => item.title + item.category + index}
           renderItem={renderItem}
           contentContainerStyle={{
-            backgroundColor: colors.Primary100,
+            backgroundColor: colors.Background,
             height: "100%",
             padding: 16,
           }}

@@ -16,14 +16,6 @@ const DisplaySettingScreen = () => {
           px={4}
           py={1}
           bgColor={colors.White}
-          // _light={{ bgColor: colors.White }}
-          _dark={
-            {
-              // bgColor: colors.light100,
-              // borderWidth: "0.6",
-              // borderColor: colors.light700,
-            }
-          }
         >
           <HStack alignItems={"center"} space={48} p={0}>
             <Text _light={{ color: colors.Primary900 }} fontSize="lg">

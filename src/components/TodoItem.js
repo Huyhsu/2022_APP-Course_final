@@ -137,8 +137,12 @@ const TodoItem = ({
         </Pressable>
       </Pressable>
       <Actionsheet isOpen={isOpen} onClose={onClose}>
-        <Actionsheet.Content>
-          <Actionsheet.Item onPress={() => deleteItem()}>
+        <Actionsheet.Content bgColor={colors.Background}>
+          <Actionsheet.Item
+            bgColor={colors.Background}
+            onPress={() => deleteItem()}
+            _text={{ fontSize: "md", color: colors.Black }}
+          >
             刪除事項
           </Actionsheet.Item>
         </Actionsheet.Content>

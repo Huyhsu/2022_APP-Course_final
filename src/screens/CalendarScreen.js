@@ -1,25 +1,20 @@
-import { useState } from "react";
-import { Box, Text, FlatList, HStack, Center, Pressable } from "native-base";
+import { Box } from "native-base";
 import { useTheme } from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-import { useDispatch, useSelector } from "react-redux";
-import {
-  selectSelectedTodoItemsInCalendar,
-  selectTodoItems,
-  setCalendarSelectedTodoItems,
-} from "../redux/todoItemSlice";
+import { useSelector } from "react-redux";
+import { selectSelectedTodoItemsInCalendar } from "../redux/todoItemSlice";
+
 // Calendar
 import MyCalendar from "../components/MyCalendar";
 // Bottom Sheet
 import MyBottomSheet from "../components/MyBottomSheet";
 
 const CalendarScreen = ({ navigation }) => {
+  // State
   const selectedTodoItemsInCalendarValue = useSelector(
     selectSelectedTodoItemsInCalendar
   );
-  // Dispatch
-  const dispatch = useDispatch();
 
   const { colors } = useTheme();
   return (
@@ -27,7 +22,7 @@ const CalendarScreen = ({ navigation }) => {
       flex={1}
       style={{ backgroundColor: colors.Background }}
     >
-      <Box flex={1} bgColor={colors.Background} p={4}>
+      <Box flex={1} bgColor={colors.White} p={4}>
         <MyCalendar />
         <MyBottomSheet
           itemsData={selectedTodoItemsInCalendarValue}
