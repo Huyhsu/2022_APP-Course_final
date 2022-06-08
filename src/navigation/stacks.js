@@ -3,6 +3,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { Box, Center, Text, Pressable } from "native-base";
 
+// Stack
+import HomeTopTabs from "./topTabs";
 // Screens
 import HomeScreen from "../screens/HomeScreen";
 import CalendarScreen from "../screens/CalendarScreen";
@@ -30,6 +32,11 @@ const HomeStack = ({ navigation, currentTodoItems }) => {
             currentTodoItems={currentTodoItems}
           />
         )}
+      />
+      <Stack.Screen
+        name="WeekChartTest"
+        component={WeekChartScreen}
+        options={{ title: "本週待辦" }}
       />
     </Stack.Navigator>
   );
@@ -167,6 +174,7 @@ const WeekChartStack = ({ navigation }) => {
   return (
     <Stack.Navigator
       screenOptions={{
+        // headerShown: false,
         title: null,
         headerTitleAlign: "center",
         headerTitleStyle: {
