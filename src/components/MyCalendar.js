@@ -4,7 +4,11 @@ import { useColorMode, Box } from "native-base";
 import { Calendar, LocaleConfig } from "react-native-calendars";
 
 import { useDispatch, useSelector } from "react-redux";
-import { selectTodoItems } from "../redux/todoItemSlice";
+import {
+  selectSelectedTodoItemsInCalendar,
+  selectTodoItems,
+  setCalendarSelectedTodoItems,
+} from "../redux/todoItemSlice";
 
 // Calendar Config
 LocaleConfig.locales["fr"] = {
@@ -45,6 +49,11 @@ LocaleConfig.defaultLocale = "fr";
 const MyCalendar = () => {
   // State
   const todoItemsValue = useSelector(selectTodoItems);
+  const selectedTodoItemsInCalendarValue = useSelector(
+    selectSelectedTodoItemsInCalendar
+  );
+  // Dispatch
+  const dispatch = useDispatch();
 
   const { colors } = useTheme();
   const { colorMode } = useColorMode();
@@ -113,7 +122,7 @@ const MyCalendar = () => {
     // 標記當前點擊的日期，為了更新 dark mode 顏色，否則在切換 color mode 時會有沒更新到顏色的問題
     setPointedDate(tempPointDate);
     // 更新對應日期的事項
-    // dispatch(updateSelectItems(stayPointedDate));
+    dispatch(setCalendarSelectedTodoItems(stayPointedDate));
   }, [todoItemsValue, colorMode]);
 
   const [allMarkedDates, setAllMarkDates] = useState({});
@@ -143,7 +152,7 @@ const MyCalendar = () => {
         minDate={"2022-06-01"}
         onDayPress={(day) => {
           // console.log("selected day", day.dateString);
-          // dispatch(updateSelectItems(day.dateString));
+          dispatch(setCalendarSelectedTodoItems(day.dateString));
           getPointedDate(day.dateString);
           // console.log(allMarkedDates);
         }}

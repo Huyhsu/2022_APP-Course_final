@@ -42,6 +42,7 @@ LogBox.ignoreAllLogs(); //Ignore all log notifications
 
 // 取得今日日期 ---------------------------------------------------------------------------- 取得今日日期
 const daysFull = ["週日", "週一", "週二", "週三", "週四", "週五", "週六"];
+const daysShort = ["日", "一", "二", "三", "四", "五", "六"];
 
 const getCurrentTime = () => {
   let today = new Date();
@@ -55,38 +56,64 @@ const getCurrentTime = () => {
     date: myDate,
     day: daysFull[myDay],
   };
+  // console.log(myTime);
   return myTime;
 };
 
 const getThisWeekData = () => {
-  // let thisWeek = {};
-  // let date = new Date();
-  // date.setDate(date.getDate() - date.getDate() + 1);
-  // thisWeek["startDay"] =
-  //   date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
-
-  // date.setDate(date.getDate() + 6);
-  // thisWeek["endDay"] =
-  //   date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
-
-  // console.log("Start Day: " + thisWeek.startDay);
-  // console.log("End Day: " + thisWeek.endDay);
-
   let now = new Date();
   let nowTime = now.getTime();
   let day = now.getDay();
   let oneDayTime = 24 * 60 * 60 * 1000;
 
-  let MondayTime = nowTime - (day - 1) * oneDayTime;
+  // let MondayTime = nowTime - (day - 1) * oneDayTime;
+  // let SundayTime = nowTime + (7 - day) * oneDayTime;
+  // let monday = new Date(MondayTime);
+  // let sunday = new Date(SundayTime);
 
-  let SundayTime = nowTime + (7 - day) * oneDayTime;
+  let startSundayTime = nowTime - day * oneDayTime;
+  let endSaturdayTime = nowTime + (6 - day) * oneDayTime;
 
-  let monday = new Date(MondayTime);
-  let sunday = new Date(SundayTime);
+  let weekStartDay = new Date(startSundayTime);
+  let weekEndDay = new Date(endSaturdayTime);
 
-  console.log("Mon:  " + monday);
-  console.log("Sun:  " + sunday);
-  console.log("===================");
+  let startYear = weekStartDay.getFullYear();
+  let startMonth =
+    (weekStartDay.getMonth() < 10 ? "0" : "") + (weekStartDay.getMonth() + 1);
+  let startDate =
+    (weekStartDay.getDate() < 10 ? "0" : "") + weekStartDay.getDate();
+  let startDay = weekStartDay.getDay();
+
+  let endYear = weekEndDay.getFullYear();
+  let endMonth =
+    (weekEndDay.getMonth() < 10 ? "0" : "") + (weekEndDay.getMonth() + 1);
+  let endDate = (weekEndDay.getDate() < 10 ? "0" : "") + weekEndDay.getDate();
+  let endDay = weekEndDay.getDay();
+
+  // console.log("Start:  " + weekStartDay);
+  // console.log("End  :  " + weekEndDay);
+  // console.log("===================");
+
+  let thisWeekTime = {
+    weekStartTime: {
+      year: startYear,
+      month: startMonth,
+      date: startDate,
+      day: daysShort[startDay],
+      monthAndDate: `${startMonth}/${startDate}`,
+      compareTime: `${startYear}${startMonth}${startDate}`,
+    },
+    weekEndTime: {
+      year: endYear,
+      month: endMonth,
+      date: endDate,
+      day: daysShort[endDay],
+      monthAndDate: `${endMonth}/${endDate}`,
+      compareTime: `${endYear}${endMonth}${endDate}`,
+    },
+  };
+  // console.log(thisWeekTime);
+  return thisWeekTime;
 };
 
 //#region w/ Form Inputs

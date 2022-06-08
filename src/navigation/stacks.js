@@ -18,13 +18,21 @@ const Stack = createNativeStackNavigator();
 
 // Home Stack ( HomeTopTabs + WeekChart) -----------------------------------------------------------
 const HomeStack = ({ navigation }) => {
+  const { colors } = useTheme();
   return (
     <Stack.Navigator
-      screenOptions={
-        {
-          // headerShown: false,
-        }
-      }
+      screenOptions={{
+        title: null,
+        headerTitleAlign: "center",
+        headerTitleStyle: {
+          fontSize: 20,
+          color: colors.Primary900,
+        },
+        headerStyle: {
+          backgroundColor: colors.Primary100,
+        },
+        headerTintColor: colors.Primary900,
+      }}
     >
       <Stack.Screen
         name="Home"

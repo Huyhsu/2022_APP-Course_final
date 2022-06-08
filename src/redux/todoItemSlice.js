@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 // todoItem: {
 //   title: "",         標題
 //   notes: "",         備註
-//   timeText: "",          時間
+//   timeText: "",      時間
 //   category: "",      事項類別
 //   divide: "",        劃分優先度
 //   done: "",          完成與否
@@ -24,6 +24,7 @@ const initialState = {
     selectTime: "",
   },
   categorys: [],
+  selectedTodoItemsInCalendar: [],
 };
 
 const todoItemSlice = createSlice({
@@ -124,6 +125,13 @@ const todoItemSlice = createSlice({
       state.categorys = [...updatedCategorys];
       state.todoItems = [...updatedTodoItems];
     },
+    setCalendarSelectedTodoItems: (state, action) => {
+      const selectedDate = action.payload;
+      const shouldDisplayTodoItems = state.todoItems.filter(
+        (value) => value.selectTime == selectedDate
+      );
+      state.selectedTodoItemsInCalendar = [...shouldDisplayTodoItems];
+    },
   },
 });
 
@@ -132,6 +140,8 @@ export const selectTodoItems = (state) => state.todoItem.todoItems;
 export const selectCurrentEditTodoItem = (state) =>
   state.todoItem.currentEditTodoItem;
 export const selectCategorys = (state) => state.todoItem.categorys;
+export const selectSelectedTodoItemsInCalendar = (state) =>
+  state.todoItem.selectedTodoItemsInCalendar;
 // Actions
 export const {
   addTodoItem,
@@ -141,6 +151,7 @@ export const {
   sortCategorys,
   editCategoryNameAndTodoItemsCategory,
   removeCategorysAndEditTodoItems,
+  setCalendarSelectedTodoItems,
 } = todoItemSlice.actions;
 // Reducer
 export default todoItemSlice.reducer;
