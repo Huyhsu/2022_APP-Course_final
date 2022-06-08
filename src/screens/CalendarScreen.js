@@ -1,23 +1,24 @@
 import { useState } from "react";
 import { Box, Text, FlatList, HStack, Center, Pressable } from "native-base";
 import { useTheme } from "@react-navigation/native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import MyCalendar from "../components/MyCalendar";
+import MyBottomSheet from "../components/MyBottomSheet";
 
 const CalendarScreen = ({ navigation }) => {
   const { colors } = useTheme();
 
   return (
-    <Box
+    <GestureHandlerRootView
       flex={1}
-      bgColor={colors.Background}
-      px={8}
-      py={4}
-      // px={10}
+      style={{ backgroundColor: colors.Background }}
     >
-      <MyCalendar />
-      <Text>I am calendar screen</Text>
-    </Box>
+      <Box flex={1} bgColor={colors.Background} p={4}>
+        <MyCalendar />
+        <MyBottomSheet />
+      </Box>
+    </GestureHandlerRootView>
   );
 };
 

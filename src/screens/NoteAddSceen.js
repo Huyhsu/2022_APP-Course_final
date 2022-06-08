@@ -60,7 +60,7 @@ const NoteAddScreen = ({ navigation }) => {
       console.log("Add New Todo Item");
       createTodoItem();
       resetFormInput();
-      navigation.navigate("HomeTopTabs");
+      navigation.navigate("Home");
     } else {
       console.log("Error! Can't Add New Todo Item");
     }
@@ -108,7 +108,7 @@ const NoteAddScreen = ({ navigation }) => {
   // 按下取消
   const onCancelPress = () => {
     resetFormInput();
-    navigation.navigate("HomeTopTabs");
+    navigation.navigate("Home");
   };
   // color
   const { colors } = useTheme();

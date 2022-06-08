@@ -6,14 +6,14 @@ import { Center, Pressable } from "native-base";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCategorys, selectTodoItems } from "../redux/todoItemSlice";
 
-// Home Stack
-import { HomeStack } from "./stacks";
+// Home Screen
+import HomeScreen from "../screens/HomeScreen";
 // Week Info Card
 import WeekInfoCard from "../components/WeekInfoCard";
 
 const Tab = createMaterialTopTabNavigator();
 
-// Top Tab - HomeTabs (Many HomeStacks) with FAB and WeekChart
+// Top Tab - HomeTabs (Many HomeScreen) with FAB
 const HomeTopTabs = ({ navigation }) => {
   // States
   const todoItemsValue = useSelector(selectTodoItems);
@@ -26,7 +26,7 @@ const HomeTopTabs = ({ navigation }) => {
     <>
       <Pressable
         onPress={() => {
-          navigation.navigate("WeekChartStack");
+          navigation.navigate("WeekChart");
         }}
       >
         <WeekInfoCard />
@@ -65,7 +65,7 @@ const HomeTopTabs = ({ navigation }) => {
         <Tab.Screen
           name="所有"
           children={(props) => (
-            <HomeStack currentTodoItems={todoItemsValue} {...props} />
+            <HomeScreen currentTodoItems={todoItemsValue} {...props} />
           )}
         />
         {categorysValue.map((category, index) => {
@@ -77,7 +77,7 @@ const HomeTopTabs = ({ navigation }) => {
               key={category + index}
               name={category + index}
               children={(props) => (
-                <HomeStack
+                <HomeScreen
                   currentTodoItems={currentCategoryTodoItems}
                   {...props}
                 />
@@ -100,7 +100,7 @@ const HomeTopTabs = ({ navigation }) => {
         justifyContent={"center"}
         alignItems={"center"}
         onPress={() => {
-          navigation.navigate("NoteAddStack");
+          navigation.navigate("NoteAdd");
         }}
       >
         {({ isHovered, isFocused, isPressed }) => (

@@ -20,9 +20,11 @@ import {
   selectCurrentEditTodoItem,
 } from "../redux/todoItemSlice";
 
-const NoteEditScreen = ({ navigation, route: { params } }) => {
+const NoteEditScreen = ({ navigation, route }) => {
   // selected todoItem params from TodoItem
-  const { title, notes, timeText, category, divide, done } = params;
+  const { title, notes, timeText, category, divide, done } = route.params;
+
+  // const {}
   // States
   const todoItemsValue = useSelector(selectTodoItems);
   const currentEditTodoItemValue = useSelector(selectCurrentEditTodoItem);
@@ -82,7 +84,7 @@ const NoteEditScreen = ({ navigation, route: { params } }) => {
       console.log("Edit the Todo Item");
       updateTodoItem();
       resetFormInput();
-      navigation.navigate("HomeTopTabs");
+      navigation.navigate("Home");
     } else {
       console.log("Error! Can't Edit the Todo Item");
     }
@@ -130,6 +132,10 @@ const NoteEditScreen = ({ navigation, route: { params } }) => {
         value.divide == divide
     );
     if (updatedTodoItemIndex == -1) {
+      console.log("title: ", title);
+      console.log("timeText: ", timeText);
+      console.log("category: ", category);
+      console.log("divide: ", divide);
       console.log("Error! Can't Find the TodoItem to Edit!");
     }
     // 傳入更新後的 todo item 與 原來之 index
@@ -151,7 +157,7 @@ const NoteEditScreen = ({ navigation, route: { params } }) => {
   // 按下取消
   const onCancelPress = () => {
     resetFormInput();
-    navigation.navigate("HomeTopTabs");
+    navigation.navigate("Home");
   };
   // color
   const { colors } = useTheme();

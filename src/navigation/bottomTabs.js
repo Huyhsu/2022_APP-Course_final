@@ -1,18 +1,9 @@
 import { useTheme } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-// Top Tabs
-import HomeTopTabs from "./topTabs";
+
 // Stacks
-import {
-  CalendarStack,
-  SettingsStack,
-  NoteAddStack,
-  NoteEditStack,
-  WeekChartStack,
-} from "./stacks";
-// Custom Header
-import SearchBarHeader from "../components/SearchBarHeader";
+import { HomeStack, CalendarStack, SettingsStack } from "./stacks";
 
 const Tab = createBottomTabNavigator();
 
@@ -21,7 +12,7 @@ const BottomTabs = () => {
   const { colors } = useTheme();
   return (
     <Tab.Navigator
-      initialRouteName="HomeTopTabs"
+      initialRouteName="HomeStack"
       screenOptions={{
         headerShown: false,
         headerStatusBarHeight: 32,
@@ -44,11 +35,10 @@ const BottomTabs = () => {
       }}
     >
       <Tab.Screen
-        name="HomeTopTabs"
-        component={HomeTopTabs}
+        name="HomeStack"
+        component={HomeStack}
         options={{
-          headerShown: true,
-          header: (props) => <SearchBarHeader />,
+          headerShown: false,
           title: "清單",
           tabBarLabel: "清單",
           tabBarIcon: ({ focused }) => (
@@ -110,42 +100,6 @@ const BottomTabs = () => {
               )}
             </>
           ),
-        }}
-      />
-      <Tab.Screen
-        name="NoteAddStack"
-        component={NoteAddStack}
-        options={{
-          tabBarButton: () => null,
-          tabBarIcon: () => null,
-          title: "",
-          tabBarStyle: {
-            display: "none",
-          },
-        }}
-      />
-      <Tab.Screen
-        name="NoteEditStack"
-        component={NoteEditStack}
-        options={{
-          tabBarButton: () => null,
-          tabBarIcon: () => null,
-          title: "",
-          tabBarStyle: {
-            display: "none",
-          },
-        }}
-      />
-      <Tab.Screen
-        name="WeekChartStack"
-        component={WeekChartStack}
-        options={{
-          tabBarButton: () => null,
-          tabBarIcon: () => null,
-          title: "",
-          tabBarStyle: {
-            display: "none",
-          },
         }}
       />
     </Tab.Navigator>

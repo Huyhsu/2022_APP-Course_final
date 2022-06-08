@@ -5,15 +5,15 @@ import { getThisWeekData } from "../utils";
 import MyBottomSheet from "../components/MyBottomSheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-import MyCalendar from "../components/MyCalendar";
-
 const WeekChartScreen = ({ navigation }) => {
   const { colors } = useTheme();
 
   return (
-    <GestureHandlerRootView flex={1}>
+    <GestureHandlerRootView
+      flex={1}
+      style={{ backgroundColor: colors.Background }}
+    >
       <Box flex={1} bgColor={colors.Background}>
-        <MyCalendar />
         <Text>123</Text>
         <Text>123</Text>
         <Text>123</Text>

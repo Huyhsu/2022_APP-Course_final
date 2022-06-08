@@ -51,7 +51,7 @@ const MyCalendar = () => {
   const [{ key, theme }, setTheme] = useState({
     key: "light",
     theme: {
-      calendarBackground: colors.White,
+      calendarBackground: colors.Background,
       dayTextColor: colors.Black,
       monthTextColor: colors.Black,
       arrowColor: colors.Primary900,
@@ -62,7 +62,7 @@ const MyCalendar = () => {
       ? setTheme({
           key: "light",
           theme: {
-            calendarBackground: colors.White,
+            calendarBackground: colors.Background,
             dayTextColor: colors.Black,
             monthTextColor: colors.Black,
             arrowColor: colors.Primary900,

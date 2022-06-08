@@ -3,38 +3,36 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { Box, Center, Text, Pressable } from "native-base";
 
-// Stack
+// Home Top tabs
 import HomeTopTabs from "./topTabs";
 // Screens
-import HomeScreen from "../screens/HomeScreen";
+import WeekChartScreen from "../screens/WeekChartScreen";
 import CalendarScreen from "../screens/CalendarScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import DisplaySettingScreen from "../screens/DisplaySettingScreen";
-import NoteAddScreen from "../screens/NoteAddSceen";
 import NoteEditScreen from "../screens/NoteEditScreen";
-import WeekChartScreen from "../screens/WeekChartScreen";
+// Custom Header
+import SearchBarHeader from "../components/SearchBarHeader";
 
 const Stack = createNativeStackNavigator();
 
-// Home Stack ( Home + ? ) -----------------------------------------------------------
-const HomeStack = ({ navigation, currentTodoItems }) => {
+// Home Stack ( HomeTopTabs + WeekChart) -----------------------------------------------------------
+const HomeStack = ({ navigation }) => {
   return (
     <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
+      screenOptions={
+        {
+          // headerShown: false,
+        }
+      }
     >
       <Stack.Screen
         name="Home"
-        children={() => (
-          <HomeScreen
-            navigation={navigation}
-            currentTodoItems={currentTodoItems}
-          />
-        )}
+        component={HomeTopTabs}
+        options={{ title: "清單", header: (props) => <SearchBarHeader /> }}
       />
       <Stack.Screen
-        name="WeekChartTest"
+        name="WeekChart"
         component={WeekChartScreen}
         options={{ title: "本週待辦" }}
       />
@@ -47,6 +45,7 @@ const CalendarStack = ({ navigation }) => {
   return (
     <Stack.Navigator
       screenOptions={{
+        headerShown: false,
         title: null,
         headerTitleAlign: "center",
         headerTitleStyle: {
@@ -62,7 +61,11 @@ const CalendarStack = ({ navigation }) => {
       <Stack.Screen
         name="Calendar"
         component={CalendarScreen}
-        options={{ title: "日曆" }}
+        options={{
+          title: "日曆",
+          headerShown: true,
+          header: (props) => <SearchBarHeader />,
+        }}
       />
     </Stack.Navigator>
   );
@@ -99,65 +102,66 @@ const SettingsStack = ({ navigation }) => {
   );
 };
 // NoteAdd Stack ( NoteAdd ) --------------------------------------
-const NoteAddStack = ({ navigation }) => {
-  const { colors } = useTheme();
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        title: null,
-        headerTitleAlign: "center",
-        headerTitleStyle: {
-          fontSize: 20,
-          color: colors.Primary900,
-        },
-        headerStyle: {
-          backgroundColor: colors.Primary100,
-        },
-        headerTintColor: colors.Primary900,
-        headerLeft: () => (
-          <Pressable onPress={() => navigation.navigate("HomeTopTabs")}>
-            <MaterialIcons
-              name="arrow-back"
-              size={24}
-              color={colors.Primary900}
-            />
-          </Pressable>
-        ),
-      }}
-    >
-      <Stack.Screen
-        name="NoteAdd"
-        component={NoteAddScreen}
-        options={{ title: "新增" }}
-      />
-    </Stack.Navigator>
-  );
-};
+// const NoteAddStack = ({ navigation }) => {
+//   const { colors } = useTheme();
+//   return (
+//     <Stack.Navigator
+//       screenOptions={{
+//         title: null,
+//         headerTitleAlign: "center",
+//         headerTitleStyle: {
+//           fontSize: 20,
+//           color: colors.Primary900,
+//         },
+//         headerStyle: {
+//           backgroundColor: colors.Primary100,
+//         },
+//         headerTintColor: colors.Primary900,
+//         headerLeft: () => (
+//           <Pressable onPress={() => navigation.navigate("HomeTopTabs")}>
+//             <MaterialIcons
+//               name="arrow-back"
+//               size={24}
+//               color={colors.Primary900}
+//             />
+//           </Pressable>
+//         ),
+//       }}
+//     >
+//       <Stack.Screen
+//         name="NoteAdd"
+//         component={NoteAddScreen}
+//         options={{ title: "新增" }}
+//       />
+//     </Stack.Navigator>
+//   );
+// };
 // NoteEdit Stack ( NoteEdit ) --------------------------------------
 const NoteEditStack = ({ navigation }) => {
   const { colors } = useTheme();
   return (
     <Stack.Navigator
       screenOptions={{
-        title: null,
-        headerTitleAlign: "center",
-        headerTitleStyle: {
-          fontSize: 20,
-          color: colors.Primary900,
-        },
-        headerStyle: {
-          backgroundColor: colors.Primary100,
-        },
-        headerTintColor: colors.Primary900,
-        headerLeft: () => (
-          <Pressable onPress={() => navigation.navigate("HomeTopTabs")}>
-            <MaterialIcons
-              name="arrow-back"
-              size={24}
-              color={colors.Primary900}
-            />
-          </Pressable>
-        ),
+        headerShown: false,
+        // title: null,
+        // headerTitleAlign: "center",
+        // headerTitleStyle: {
+        //   fontSize: 20,
+        //   color: colors.Primary900,
+        // },
+        // headerStyle: {
+        //   backgroundColor: colors.Primary100,
+        // },
+        // headerTintColor: colors.Primary900,
+        // headerLeft: () => (
+        //   <Pressable onPress={() => navigation.navigate("HomeTopTabs")}>
+        //     <MaterialIcons
+        //       name="arrow-back"
+        //       size={24}
+        //       color={colors.Primary900}
+        //     />
+        //   </Pressable>
+        // ),
       }}
     >
       <Stack.Screen
@@ -169,41 +173,41 @@ const NoteEditStack = ({ navigation }) => {
   );
 };
 // WeekChart Stack ( WeekChart ) --------------------------------------
-const WeekChartStack = ({ navigation }) => {
-  const { colors } = useTheme();
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        // headerShown: false,
-        title: null,
-        headerTitleAlign: "center",
-        headerTitleStyle: {
-          fontSize: 20,
-          color: colors.Primary900,
-        },
-        headerStyle: {
-          backgroundColor: colors.Primary100,
-        },
-        headerTintColor: colors.Primary900,
-        headerLeft: () => (
-          <Pressable onPress={() => navigation.navigate("HomeTopTabs")}>
-            <MaterialIcons
-              name="arrow-back"
-              size={24}
-              color={colors.Primary900}
-            />
-          </Pressable>
-        ),
-      }}
-    >
-      <Stack.Screen
-        name="WeekChart"
-        component={WeekChartScreen}
-        options={{ title: "本週待辦" }}
-      />
-    </Stack.Navigator>
-  );
-};
+// const WeekChartStack = ({ navigation }) => {
+//   const { colors } = useTheme();
+//   return (
+//     <Stack.Navigator
+//       screenOptions={{
+//         // headerShown: false,
+//         title: null,
+//         headerTitleAlign: "center",
+//         headerTitleStyle: {
+//           fontSize: 20,
+//           color: colors.Primary900,
+//         },
+//         headerStyle: {
+//           backgroundColor: colors.Primary100,
+//         },
+//         headerTintColor: colors.Primary900,
+//         headerLeft: () => (
+//           <Pressable onPress={() => navigation.navigate("HomeTopTabs")}>
+//             <MaterialIcons
+//               name="arrow-back"
+//               size={24}
+//               color={colors.Primary900}
+//             />
+//           </Pressable>
+//         ),
+//       }}
+//     >
+//       <Stack.Screen
+//         name="WeekChart"
+//         component={WeekChartScreen}
+//         options={{ title: "本週待辦" }}
+//       />
+//     </Stack.Navigator>
+//   );
+// };
 
 // =================================================================================== export
 // Stacks
@@ -211,7 +215,7 @@ export {
   HomeStack,
   CalendarStack,
   SettingsStack,
-  NoteAddStack,
+  // NoteAddStack,
   NoteEditStack,
-  WeekChartStack,
+  // WeekChartStack,
 };
