@@ -13,7 +13,7 @@ import WeekInfoCard from "../components/WeekInfoCard";
 
 const Tab = createMaterialTopTabNavigator();
 
-// Top Tab - HomeTabs (Many HomeStacks) with FAB
+// Top Tab - HomeTabs (Many HomeStacks) with FAB and WeekChart
 const HomeTopTabs = ({ navigation }) => {
   // States
   const todoItemsValue = useSelector(selectTodoItems);
@@ -26,7 +26,7 @@ const HomeTopTabs = ({ navigation }) => {
     <>
       <Pressable
         onPress={() => {
-          console.log("today");
+          navigation.navigate("WeekChartStack");
         }}
       >
         <WeekInfoCard />

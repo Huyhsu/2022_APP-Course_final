@@ -58,6 +58,37 @@ const getCurrentTime = () => {
   return myTime;
 };
 
+const getThisWeekData = () => {
+  // let thisWeek = {};
+  // let date = new Date();
+  // date.setDate(date.getDate() - date.getDate() + 1);
+  // thisWeek["startDay"] =
+  //   date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
+
+  // date.setDate(date.getDate() + 6);
+  // thisWeek["endDay"] =
+  //   date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
+
+  // console.log("Start Day: " + thisWeek.startDay);
+  // console.log("End Day: " + thisWeek.endDay);
+
+  let now = new Date();
+  let nowTime = now.getTime();
+  let day = now.getDay();
+  let oneDayTime = 24 * 60 * 60 * 1000;
+
+  let MondayTime = nowTime - (day - 1) * oneDayTime;
+
+  let SundayTime = nowTime + (7 - day) * oneDayTime;
+
+  let monday = new Date(MondayTime);
+  let sunday = new Date(SundayTime);
+
+  console.log("Mon:  " + monday);
+  console.log("Sun:  " + sunday);
+  console.log("===================");
+};
+
 //#region w/ Form Inputs
 
 // 選擇日期 ------------------------------------------------------------------------------ 選擇日期
@@ -1370,7 +1401,7 @@ const ModalWithRemoveCategorysCheckInRemoveCategorysModal = (props) => {
 
 // =================================================================================== Export
 // Functions
-export { getCurrentTime };
+export { getCurrentTime, getThisWeekData };
 // Form Input Utils
 export {
   InputWithTitle,

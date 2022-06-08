@@ -9,6 +9,7 @@ import {
   SettingsStack,
   NoteAddStack,
   NoteEditStack,
+  WeekChartStack,
 } from "./stacks";
 // Custom Header
 import SearchBarHeader from "../components/SearchBarHeader";
@@ -126,6 +127,18 @@ const BottomTabs = () => {
       <Tab.Screen
         name="NoteEditStack"
         component={NoteEditStack}
+        options={{
+          tabBarButton: () => null,
+          tabBarIcon: () => null,
+          title: "",
+          tabBarStyle: {
+            display: "none",
+          },
+        }}
+      />
+      <Tab.Screen
+        name="WeekChartStack"
+        component={WeekChartStack}
         options={{
           tabBarButton: () => null,
           tabBarIcon: () => null,

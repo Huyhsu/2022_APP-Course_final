@@ -10,6 +10,7 @@ import SettingsScreen from "../screens/SettingsScreen";
 import DisplaySettingScreen from "../screens/DisplaySettingScreen";
 import NoteAddScreen from "../screens/NoteAddSceen";
 import NoteEditScreen from "../screens/NoteEditScreen";
+import WeekChartScreen from "../screens/WeekChartScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -160,4 +161,49 @@ const NoteEditStack = ({ navigation }) => {
     </Stack.Navigator>
   );
 };
-export { HomeStack, CalendarStack, SettingsStack, NoteAddStack, NoteEditStack };
+// WeekChart Stack ( WeekChart ) --------------------------------------
+const WeekChartStack = ({ navigation }) => {
+  const { colors } = useTheme();
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        title: null,
+        headerTitleAlign: "center",
+        headerTitleStyle: {
+          fontSize: 20,
+          color: colors.Primary900,
+        },
+        headerStyle: {
+          backgroundColor: colors.Primary100,
+        },
+        headerTintColor: colors.Primary900,
+        headerLeft: () => (
+          <Pressable onPress={() => navigation.navigate("HomeTopTabs")}>
+            <MaterialIcons
+              name="arrow-back"
+              size={24}
+              color={colors.Primary900}
+            />
+          </Pressable>
+        ),
+      }}
+    >
+      <Stack.Screen
+        name="WeekChart"
+        component={WeekChartScreen}
+        options={{ title: "本週待辦" }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+// =================================================================================== export
+// Stacks
+export {
+  HomeStack,
+  CalendarStack,
+  SettingsStack,
+  NoteAddStack,
+  NoteEditStack,
+  WeekChartStack,
+};
