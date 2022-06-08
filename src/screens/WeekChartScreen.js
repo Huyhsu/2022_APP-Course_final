@@ -4,7 +4,7 @@ import { useTheme } from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { useDispatch, useSelector } from "react-redux";
-import { selectTodoItems } from "../redux/todoItemSlice";
+import { selectTodoItems, setWeekTodoItemsCount } from "../redux/todoItemSlice";
 
 import { getThisWeekData } from "../utils";
 import MyBottomSheet from "../components/MyBottomSheet";
@@ -19,40 +19,89 @@ import {
 const WeekChartScreen = ({ navigation }) => {
   // States
   const todoItemsValue = useSelector(selectTodoItems);
+  // Dispatch
+  const dispatch = useDispatch();
   // color
   const { colors } = useTheme();
-
-  const testData = [
-    { x: "日", y: 2 },
-    { x: "一", y: 1 },
-    { x: "二", y: 2 },
-    { x: "三", y: 2 },
-    { x: "四", y: 1 },
-    { x: "五", y: 3 },
-    { x: "六", y: 2 },
-  ];
 
   const thisWeekTime = getThisWeekData();
 
   const [thisWeekTodoItems, setThisWeekTodoItems] = useState([]);
+  const [firstDayItemsCount, setFirstDayItemsCount] = useState(0);
+  const [secondDayItemsCount, setSecondDayItemsCount] = useState(0);
+  const [thirdDayItemsCount, setThirdDayItemsCount] = useState(0);
+  const [fourthDayItemsCount, setFourthDayItemsCount] = useState(0);
+  const [fifthDayItemsCount, setFifthDayItemsCount] = useState(0);
+  const [sixthDayItemsCount, setSixthDayItemsCount] = useState(0);
+  const [seventhDayItemsCount, setSeventhDayItemsCount] = useState(0);
 
-  // 根據 todoItems 的變動來更新本週 todoItems
-  // compareTime = 20220605
+  // 根據 todoItems 的變動來更新本週 todoItems => 換月有問題
+  // useEffect(() => {
+  //   const temp = todoItemsValue.filter((value) => {
+  //     let compareTime = Number(thisWeekTime.weekStartTime.compareTime);
+  //     for (let i = 0; i < 7; i++) {
+  //       // console.log(compareTime);
+  //       if (Number(value.compareTime) == compareTime) {
+  //         compareTime += 1;
+  //         return value;
+  //       } else {
+  //         compareTime += 1;
+  //       }
+  //     }
+  //   });
+  //   setThisWeekTodoItems([...temp]);
+  // }, [todoItemsValue]);
+
   useEffect(() => {
+    let one = 0;
+    let two = 0;
+    let three = 0;
+    let four = 0;
+    let five = 0;
+    let six = 0;
+    let seven = 0;
     const temp = todoItemsValue.filter((value) => {
-      let compareTime = Number(thisWeekTime.weekStartTime.compareTime);
+      // 從第一天 (日) 比較到最後一天 (六)
       for (let i = 0; i < 7; i++) {
-        // console.log(compareTime);
-        if (Number(value.compareTime) == compareTime) {
-          compareTime += 1;
+        if (value.compareTime == thisWeekTime.compareTimes[i]) {
+          if (i == 0) {
+            one++;
+          } else if (i == 1) {
+            two++;
+          } else if (i == 2) {
+            three++;
+          } else if (i == 3) {
+            four++;
+          } else if (i == 4) {
+            five++;
+          } else if (i == 5) {
+            six++;
+          } else if (i == 6) {
+            seven++;
+          }
           return value;
-        } else {
-          compareTime += 1;
         }
       }
     });
+    setFirstDayItemsCount(one);
+    setSecondDayItemsCount(two);
+    setThirdDayItemsCount(three);
+    setFourthDayItemsCount(four);
+    setFifthDayItemsCount(five);
+    setSixthDayItemsCount(six);
+    setSeventhDayItemsCount(seven);
     setThisWeekTodoItems([...temp]);
   }, [todoItemsValue]);
+
+  const weekData = [
+    { x: "日", y: firstDayItemsCount },
+    { x: "一", y: secondDayItemsCount },
+    { x: "二", y: thirdDayItemsCount },
+    { x: "三", y: fourthDayItemsCount },
+    { x: "四", y: fifthDayItemsCount },
+    { x: "五", y: sixthDayItemsCount },
+    { x: "六", y: seventhDayItemsCount },
+  ];
 
   return (
     <GestureHandlerRootView
@@ -60,7 +109,7 @@ const WeekChartScreen = ({ navigation }) => {
       style={{ backgroundColor: colors.Background }}
     >
       <Box flex={1} bgColor={colors.Background}>
-        <Center pt={4}>
+        <Center pt={10}>
           <Text fontSize={"sm"}>
             {thisWeekTime.weekStartTime.monthAndDate} -{" "}
             {thisWeekTime.weekEndTime.monthAndDate}
@@ -71,11 +120,10 @@ const WeekChartScreen = ({ navigation }) => {
             style={{
               data: { fill: colors.High, stroke: colors.Black },
               labels: { fill: colors.Black },
-              stroke: "teal",
               axis: { stroke: "transparent" },
               ticks: { stroke: "transparent" },
             }}
-            data={testData}
+            data={weekData}
             labels={({ datum }) => `${datum.y}`}
           />
           <VictoryAxis

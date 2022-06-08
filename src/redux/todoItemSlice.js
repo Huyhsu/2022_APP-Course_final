@@ -25,6 +25,7 @@ const initialState = {
   },
   categorys: [],
   selectedTodoItemsInCalendar: [],
+  weekTodoItemsCount: 0,
 };
 
 const todoItemSlice = createSlice({
@@ -75,8 +76,8 @@ const todoItemSlice = createSlice({
       });
       state.categorys = [...updatedCategorys];
       state.todoItems = [...updatedTodoItems];
-      console.log(state.categorys);
-      console.log(state.todoItems);
+      // console.log(state.categorys);
+      // console.log(state.todoItems);
     },
     removeCategorysAndEditTodoItems: (state, action) => {
       const selectedCategorys = [...action.payload];
@@ -132,6 +133,15 @@ const todoItemSlice = createSlice({
       );
       state.selectedTodoItemsInCalendar = [...shouldDisplayTodoItems];
     },
+    removeTodoItem: (state, action) => {
+      const targetTodoItemIndex = action.payload;
+      const currentTodoItems = [...state.todoItems];
+      currentTodoItems.splice(targetTodoItemIndex, 1);
+      state.todoItems = [...currentTodoItems];
+    },
+    setWeekTodoItemsCount: (state, action) => {
+      state.weekTodoItemsCount = action.payload;
+    },
   },
 });
 
@@ -142,6 +152,9 @@ export const selectCurrentEditTodoItem = (state) =>
 export const selectCategorys = (state) => state.todoItem.categorys;
 export const selectSelectedTodoItemsInCalendar = (state) =>
   state.todoItem.selectedTodoItemsInCalendar;
+export const selectWeekTodoItemsCount = (state) =>
+  state.todoItem.weekTodoItemsCount;
+
 // Actions
 export const {
   addTodoItem,
@@ -152,6 +165,8 @@ export const {
   editCategoryNameAndTodoItemsCategory,
   removeCategorysAndEditTodoItems,
   setCalendarSelectedTodoItems,
+  removeTodoItem,
+  setWeekTodoItemsCount,
 } = todoItemSlice.actions;
 // Reducer
 export default todoItemSlice.reducer;

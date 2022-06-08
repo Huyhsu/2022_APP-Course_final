@@ -9,25 +9,38 @@ import {
   Text,
   Pressable,
   useColorMode,
+  Actionsheet,
+  useDisclose,
 } from "native-base";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
-import { useDispatch } from "react-redux";
-import { setCurrentEditTodoItem } from "../redux/todoItemSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  removeTodoItem,
+  selectTodoItems,
+  setCurrentEditTodoItem,
+} from "../redux/todoItemSlice";
 
 const TodoItem = ({
   navigation,
   todoItem,
-  todoItem: { title, timeText, divide, done },
+  todoItem: { title, notes, timeText, category, divide, done },
 }) => {
   // States
-
+  const todoItemsValue = useSelector(selectTodoItems);
   // Dispatch
   const dispatch = useDispatch();
 
+  const { isOpen, onOpen, onClose } = useDisclose();
+
   // 處理點擊
-  const handleClick = () => {
+  const onItemCheckPress = () => {
     // checkItemValue();
+  };
+
+  const onItemLongPress = () => {
+    console.log("TAKOLONG");
+    onOpen();
   };
 
   const onItemPress = () => {
@@ -39,22 +52,23 @@ const TodoItem = ({
     console.log("takoshort");
   };
 
-  // 暴力找出相同物件之 index, 並呼叫 updateItem
-  // const checkItemValue = () => {
-  //   const itemIndex = itemList.items.findIndex(
-  //     (value) =>
-  //       value.title == item.title &&
-  //       value.time == item.time &&
-  //       value.category == item.category &&
-  //       value.divide == item.divide &&
-  //       value.note == item.note
-  //   );
-  //   if (itemIndex == -1) {
-  //     console.log("Error!! Can't find the item to update!!");
-  //   }
-  //   const updatedItem = { ...item, done: !item.done };
-  //   dispatch(updateItem(updatedItem, itemIndex));
-  // };
+  // 暴力找出相同物件之 index
+  const deleteItem = () => {
+    const itemIndex = todoItemsValue.findIndex(
+      (value) =>
+        value.title == title &&
+        value.timeText == timeText &&
+        value.category == category &&
+        value.divide == divide &&
+        value.notes == notes
+    );
+    if (itemIndex == -1) {
+      console.log("Error!! Can't find the item index to delete!!");
+    } else {
+      console.log("Delete One Todo Item");
+      dispatch(removeTodoItem(itemIndex));
+    }
+  };
 
   // 處理過長標題
   let tempTitle = title;
@@ -76,7 +90,7 @@ const TodoItem = ({
         h={"100%"}
         w={"100%"}
         onPress={() => onItemPress()}
-        onLongPress={() => console.log("TAKOLONG")}
+        onLongPress={() => onItemLongPress()}
         flexDir={"row"}
         justifyContent={"space-between"}
         alignItems={"center"}
@@ -111,7 +125,7 @@ const TodoItem = ({
           justifyContent={"center"}
           alignItems={"center"}
           onPress={() => {
-            handleClick();
+            onItemCheckPress();
             console.log("Check !");
           }}
         >
@@ -122,6 +136,13 @@ const TodoItem = ({
           />
         </Pressable>
       </Pressable>
+      <Actionsheet isOpen={isOpen} onClose={onClose}>
+        <Actionsheet.Content>
+          <Actionsheet.Item onPress={() => deleteItem()}>
+            刪除事項
+          </Actionsheet.Item>
+        </Actionsheet.Content>
+      </Actionsheet>
     </Box>
   );
 };

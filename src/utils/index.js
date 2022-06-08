@@ -60,6 +60,14 @@ const getCurrentTime = () => {
   return myTime;
 };
 
+const getCompareTime = (theTime) => {
+  let theDay = new Date(theTime);
+  let year = theDay.getFullYear();
+  let month = (theDay.getMonth() < 10 ? "0" : "") + (theDay.getMonth() + 1);
+  let date = (theDay.getDate() < 10 ? "0" : "") + theDay.getDate();
+  return `${year}${month}${date}`;
+};
+// 取得本週資訊 ----------------------------------------------------------------------------
 const getThisWeekData = () => {
   let now = new Date();
   let nowTime = now.getTime();
@@ -71,7 +79,13 @@ const getThisWeekData = () => {
   // let monday = new Date(MondayTime);
   // let sunday = new Date(SundayTime);
 
+  // time
   let startSundayTime = nowTime - day * oneDayTime;
+  let second = nowTime + (1 - day) * oneDayTime;
+  let third = nowTime + (2 - day) * oneDayTime;
+  let fourth = nowTime + (3 - day) * oneDayTime;
+  let fifth = nowTime + (4 - day) * oneDayTime;
+  let sixth = nowTime + (5 - day) * oneDayTime;
   let endSaturdayTime = nowTime + (6 - day) * oneDayTime;
 
   let weekStartDay = new Date(startSundayTime);
@@ -111,8 +125,16 @@ const getThisWeekData = () => {
       monthAndDate: `${endMonth}/${endDate}`,
       compareTime: `${endYear}${endMonth}${endDate}`,
     },
+    compareTimes: [
+      getCompareTime(startSundayTime),
+      getCompareTime(second),
+      getCompareTime(third),
+      getCompareTime(fourth),
+      getCompareTime(fifth),
+      getCompareTime(sixth),
+      getCompareTime(endSaturdayTime),
+    ],
   };
-  // console.log(thisWeekTime);
   return thisWeekTime;
 };
 
