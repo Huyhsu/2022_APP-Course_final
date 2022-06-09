@@ -17,6 +17,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useDispatch, useSelector } from "react-redux";
 import {
   removeTodoItem,
+  editTodoItem,
   selectTodoItems,
   setCurrentEditTodoItem,
 } from "../redux/todoItemSlice";
@@ -35,7 +36,8 @@ const TodoItem = ({
 
   // 處理點擊
   const onItemCheckPress = () => {
-    // checkItemValue();
+    // console.log("Check !");
+    checkItem();
   };
 
   const onItemLongPress = () => {
@@ -67,6 +69,24 @@ const TodoItem = ({
     } else {
       console.log("Delete One Todo Item");
       dispatch(removeTodoItem(itemIndex));
+    }
+  };
+
+  const checkItem = () => {
+    const updatedTodoItemIndex = todoItemsValue.findIndex(
+      (value) =>
+        value.title == title &&
+        value.timeText == timeText &&
+        value.category == category &&
+        value.divide == divide &&
+        value.notes == notes
+    );
+    if (updatedTodoItemIndex == -1) {
+      console.log("Error!! Can't find the item index to check!!");
+    } else {
+      console.log("Check One Todo Item");
+      const updatedTodoItem = { ...todoItem, done: !done };
+      dispatch(editTodoItem({ updatedTodoItemIndex, updatedTodoItem }));
     }
   };
 
@@ -126,14 +146,21 @@ const TodoItem = ({
           alignItems={"center"}
           onPress={() => {
             onItemCheckPress();
-            console.log("Check !");
           }}
         >
-          <MaterialIcons
-            name="check-box-outline-blank"
-            size={24}
-            color={colors.Primary900}
-          />
+          {done ? (
+            <MaterialIcons
+              name="check-box"
+              size={24}
+              color={colors.Primary900}
+            />
+          ) : (
+            <MaterialIcons
+              name="check-box-outline-blank"
+              size={24}
+              color={colors.Primary900}
+            />
+          )}
         </Pressable>
       </Pressable>
       <Actionsheet isOpen={isOpen} onClose={onClose}>

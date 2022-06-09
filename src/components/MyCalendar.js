@@ -67,7 +67,7 @@ const MyCalendar = () => {
       ? setTheme({
           key: "light",
           theme: {
-            calendarBackground: colors.Background,
+            calendarBackground: colors.White,
             dayTextColor: colors.Black,
             monthTextColor: colors.Black,
             arrowColor: colors.Primary900,

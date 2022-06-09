@@ -817,7 +817,7 @@ const ModalWithEditCategorys = (props) => {
           py={1}
           alignItems={"center"}
         >
-          <MaterialIcons name="menu" size={20} color={colors.Black} />
+          <MaterialIcons name="drag-handle" size={24} color={colors.Black} />
           <Text color={colors.Black} fontSize={"md"} ml={5}>
             {item}
           </Text>
@@ -826,7 +826,7 @@ const ModalWithEditCategorys = (props) => {
             position={"absolute"}
             right={4}
           >
-            <MaterialIcons name="edit" size={20} color={colors.Black} />
+            <MaterialIcons name="edit" size={24} color={colors.Black} />
           </Pressable>
         </HStack>
       )}

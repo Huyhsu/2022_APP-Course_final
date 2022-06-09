@@ -39,7 +39,7 @@ const MyBottomSheet = (props) => {
       }}
       backgroundComponent={null}
       style={{ shadowColor: "black" }}
-      // handleIndicatorStyle={{ backgroundColor: colors.White }}
+      handleIndicatorStyle={{ backgroundColor: colors.Black }}
       // containerStyle={{ backgroundColor: colors.White }}
       // contentContainerStyle={{ backgroundColor: colors.White }}
     >
