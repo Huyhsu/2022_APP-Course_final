@@ -12,9 +12,11 @@ const persistConfig = {
 
 export const store = configureStore({
   reducer: {
-    todoItem: todoItemReducer,
-    // todoItem: persistReducer(persistConfig, todoItemReducer),
+    // todoItem: todoItemReducer,
+    todoItem: persistReducer(persistConfig, todoItemReducer),
   },
   devTools: process.env.NODE_ENV !== "production",
   middleware: [thunk],
 });
+
+persistStore(store);
